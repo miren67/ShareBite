@@ -686,25 +686,23 @@ Log In
 <div class="logo">🥗 ShareBite</div>
 
 <nav class="navbar">
-<a href="index.html" class="brand">ShareBite</a>
+<!-- <a href="index.html" class="brand">ShareBite</a> -->
 
 <div class="nav-right">
 <!-- Three-line menu button -->
 <button class="menu-toggle" id="menuToggle"
 aria-label="Open navigation menu"
 aria-expanded="false">
-☰
+Browse Here!
 </button>
 
-<!-- Menu items that appear when clicked 
+<!-- Menu items that appear when clicked -->
 <div class="nav-menu" id="navMenu">
 <a href="index.html">Home</a>
-<a href="index.html#explore">Explore Food</a>
-<a href="post-food.html">Post Food</a>
-<a href="deliveries.html">Deliveries</a>
-</div>-->
-
-<!-- Keep logout visible -->
+<a href="#marketplace">Explore Food</a>
+<a href="#postForm">Post Food</a>
+<a href="#deliveryDashboard">Deliveries</a>
+</div>
 </div>
 </nav>
 </header>
@@ -983,11 +981,11 @@ const query = searchInput.value.trim().toLowerCase();
 
 const filtered = foods.filter(food => {
 const matchesCategory =
-activeCategory === "All" 
+activeCategory === "All" ||
 food.category === activeCategory;
 
 const matchesSearch =
-food.name.toLowerCase().includes(query) 
+food.name.toLowerCase().includes(query) ||
 food.location.toLowerCase().includes(query);
 
 return matchesCategory && matchesSearch;
@@ -1065,7 +1063,7 @@ foodGrid.appendChild(card);
 
 function reserveFood(id) {
 const food = foods.find(item => item.id === id);
-if (!food.quantity <= 0) return;
+if (!food || food.quantity <= 0) return;
 
 const wantsDelivery = confirm(
 "Reserve " + food.name+ " for RM " + money(food.price) +
@@ -1111,8 +1109,6 @@ function openPostForm() {
 postForm.classList.add("open");
 postForm.scrollIntoView({ behavior: "smooth", block: "start" });
 }
-
-document.getElementById("postTopBtn").addEventListener("click", openPostForm);
 
 document.getElementById("exploreBtn").addEventListener("click", () => {
 document.getElementById("marketplace").scrollIntoView({ behavior: "smooth" });
@@ -1313,6 +1309,38 @@ completedDeliveries + " deliveries completed";
 
 renderDeliveries();
 
+
+
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
+
+menuToggle.addEventListener("click", function () {
+    navMenu.classList.toggle("show");
+
+    const isOpen = navMenu.classList.contains("show");
+    menuToggle.setAttribute("aria-expanded", isOpen);
+    menuToggle.setAttribute(
+        "aria-label",
+        isOpen ? "Close navigation menu" : "Open navigation menu"
+    );
+});
+
+// Close the menu after selecting a link
+navMenu.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", function () {
+        navMenu.classList.remove("show");
+        menuToggle.setAttribute("aria-expanded", "false");
+    });
+});
+
+// Close the menu when clicking outside it
+document.addEventListener("click", function (event) {
+    if (!menuToggle.contains(event.target) &&
+        !navMenu.contains(event.target)) {
+        navMenu.classList.remove("show");
+        menuToggle.setAttribute("aria-expanded", "false");
+    }
+});
 </script>
 
 <script type="module">
@@ -1441,23 +1469,6 @@ renderDeliveries();
     }
   });
 
-  <div class="nav-right">
-    <!-- Hamburger menu -->
-    <button class="menu-toggle" id="menuToggle"
-            aria-label="Open navigation menu"
-            aria-expanded="false">
-        ☰
-    </button>
-
-    <!-- Dropdown navigation -->
-    <div class="nav-menu" id="navMenu">
-        <a href="index.html">Home</a>
-        <a href="index.html#explore">Explore Food</a>
-        <a href="post-food.html">Post Food</a>
-        <a href="deliveries.html">Deliveries</a>
-    </div>
-
-
   // Keep the login screen visible until Firebase confirms sign-in.
   let logoutButton = null;
 
@@ -1469,10 +1480,8 @@ renderDeliveries();
         logoutButton.textContent = "Log Out";
         logoutButton.type = "button";
 
-        logoutButton.style.cssText =
-          "position:fixed;top:16px;right:16px;z-index:99998;" +
-          "padding:10px 16px;border:0;border-radius:8px;" +
-          "background:#285943;color:white;cursor:pointer;";
+        logoutButton.className = "logout-btn";
+        logoutButton.style.position = "static";
 
         logoutButton.addEventListener("click", async () => {
           try {
@@ -1482,7 +1491,7 @@ renderDeliveries();
           }
         });
 
-        document.body.appendChild(logoutButton);
+        document.querySelector(".nav-right").appendChild(logoutButton);
       }
 
       logoutButton.hidden = false;
@@ -1494,41 +1503,6 @@ renderDeliveries();
       }
     }
   });
-
-  </div>
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.getElementById("navMenu");
-
-menuToggle.addEventListener("click", function () {
-    navMenu.classList.toggle("show");
-
-    const isOpen = navMenu.classList.contains("show");
-    menuToggle.setAttribute("aria-expanded", isOpen);
-    menuToggle.setAttribute(
-        "aria-label",
-        isOpen ? "Close navigation menu" : "Open navigation menu"
-    );
-});
-
-// Close the menu after selecting a link
-navMenu.querySelectorAll("a").forEach(function (link) {
-    link.addEventListener("click", function () {
-        navMenu.classList.remove("show");
-        menuToggle.setAttribute("aria-expanded", "false");
-    });
-});
-
-// Close the menu when clicking outside it
-document.addEventListener("click", function (event) {
-    if (!menuToggle.contains(event.target) &&
-        !navMenu.contains(event.target)) {
-        navMenu.classList.remove("show");
-        menuToggle.setAttribute("aria-expanded", "false");
-    }
-});
-
 </script>
-</body>
-</html>
 </body>
 </html>
