@@ -184,6 +184,8 @@ background: white;
 border: 1px solid var(--border);
 border-radius: 15px;
 overflow: hidden;
+display: flex;
+flex-direction: column;
 }
 
 .food-picture {
@@ -209,6 +211,9 @@ font-weight: 800;
 
 .food-info {
 padding: 17px;
+display: flex;
+flex-direction: column;
+flex: 1;
 }
 
 .food-info h3 {
@@ -405,7 +410,7 @@ max-width: none;
 }
 
 .auth-screen[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .auth-card {
@@ -581,6 +586,11 @@ vertical-align: middle;
     background: #e8f2e8;
 }
 
+.nav-menu a.active {
+    background: #245b46;
+    color: white;
+}
+
 /* Logout button */
 .logout-btn {
     position: static;
@@ -623,12 +633,19 @@ vertical-align: middle;
     }
 }
 
+#deliveryGrid .food-info .primary-btn {
+    margin-top: auto;
+}
+
+#deliveryGrid .food-card {
+    height: 100%;
+}
 
 </style>
 </head>
 <body>
 
-<section id="authScreen" class="auth-screen">
+<section id="authScreen" class="auth-screen" hidden>
 <div class="auth-card">
 <div class="auth-logo">🥗</div>
 <h1>ShareBite</h1>
@@ -684,9 +701,9 @@ Log In
 <header>
 <div class="logo">🥗 ShareBite</div>
 <nav class="navbar">
-<a href="index.html" class="brand">ShareBite</a>
+<!-- <a href="index.html" class="brand">ShareBite</a> -->
 <div class="nav-right">
-<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">Browse Here!</button>
 <div class="nav-menu" id="navMenu">
 <a href="homepage.html">Home</a>
 <a href="explore.html">Explore Food</a>
@@ -772,13 +789,20 @@ menuToggle.addEventListener('click', () => {
 navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
 }));
+const currentPage = window.location.pathname.split('/').pop() || 'homepage.html';
+
+navMenu.querySelectorAll('a').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
 document.addEventListener('click', event => {
   if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
     navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
   }
 });
 </script>
-<script>
+<script>/*
 const deliveryTasks = [
   { id: 1, pickup: "Campus Cafeteria", destination: "Student Residence A", fee: 2.00, status: "Available" },
   { id: 2, pickup: "Food Court", destination: "Student Residence B", fee: 3.00, status: "Available" },
@@ -839,7 +863,186 @@ function renderDeliveries() {
   document.getElementById("totalEarnings").textContent = "RM " + totalEarnings.toFixed(2) + " earned";
   document.getElementById("completedCount").textContent = completedDeliveries + " deliveries completed";
 }
+renderDeliveries();*/
+
+const DELIVERY_KEY = "sharebite_delivery_tasks";
+const ORDERS_KEY = "sharebite_demo_orders";
+
+// Keep your original three sample deliveries
+const starterDeliveries = [
+    { id: 1, pickup: "Campus Cafeteria", destination: "Student Residence A", fee: 2.00, status: "Available" },
+    { id: 2, pickup: "Food Court", destination: "Student Residence B", fee: 3.00, status: "Available" },
+    { id: 3, pickup: "Campus Cafe", destination: "Academic Block", fee: 2.50, status: "Available" }
+];
+
+function getSavedTasks() {
+    try {
+        const saved = JSON.parse(localStorage.getItem(DELIVERY_KEY));
+        if (Array.isArray(saved)) return saved;
+    } catch {}
+    return starterDeliveries.map(task => ({ ...task }));
+}
+
+function getCustomerRequests() {
+    let orders = [];
+
+    try {
+        orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+        if (!Array.isArray(orders)) orders = [];
+    } catch {
+        orders = [];
+    }
+
+    return orders
+        .filter(order => order.deliveryRequested === true)
+        .map(order => ({
+            id: "order-" + order.id,
+            orderId: order.id,
+            foodName: order.foodName,
+            pickup: order.location,
+            destination: order.deliveryAddress || "Not provided",
+            fee: 2.00, // Demo delivery fee; change if needed
+            status: "Available",
+            createdAt: order.createdAt || "",
+            isCustomerRequest: true
+        }));
+}
+
+let deliveryTasks = getSavedTasks();
+
+function saveDeliveryTasks() {
+    localStorage.setItem(DELIVERY_KEY, JSON.stringify(deliveryTasks));
+}
+
+function syncCustomerRequests() {
+    const requests = getCustomerRequests();
+
+    requests.forEach(request => {
+        const exists = deliveryTasks.some(task => task.id === request.id);
+
+        if (!exists) {
+            deliveryTasks.push(request);
+        }
+    });
+
+    saveDeliveryTasks();
+}
+
+function renderDeliveries() {
+    syncCustomerRequests();
+
+    const grid = document.getElementById("deliveryGrid");
+    grid.innerHTML = "";
+
+    // Show newest customer requests first
+    /*
+        if (a.isCustomerRequest && !b.isCustomerRequest) return -1;
+        if (!a.isCustomerRequest && b.isCustomerRequest) return 1;
+        return (b.createdAt || "").localeCompare(a.createdAt || "");
+    });*/
+
+        const sortedTasks = [...deliveryTasks].sort((a, b) => {
+    const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+
+    return aTime - bTime;
+});
+
+    sortedTasks.forEach(task => {
+        const card = document.createElement("article");
+        card.className = "food-card";
+
+        const info = document.createElement("div");
+        info.className = "food-info";
+
+        const title = document.createElement("h3");
+        title.textContent = task.isCustomerRequest
+            ? "🚲 New Delivery Request"
+            : "🚲 Campus Delivery #" + task.id;
+
+        const foodName = document.createElement("p");
+        foodName.textContent = task.foodName
+            ? "🍽 Food: " + task.foodName
+            : "";
+
+        const pickup = document.createElement("p");
+        pickup.textContent = "📦 Pickup: " + task.pickup;
+
+        const destination = document.createElement("p");
+        destination.textContent = "📍 Deliver to: " + task.destination;
+
+        const fee = document.createElement("div");
+        fee.className = "price";
+        fee.textContent = "RM " + Number(task.fee).toFixed(2);
+
+        const status = document.createElement("p");
+        status.textContent = "Status: " + task.status;
+
+        const button = document.createElement("button");
+        button.className = "primary-btn";
+        button.style.width = "100%";
+
+        if (task.status === "Available") {
+            button.textContent = "Accept Delivery";
+
+            button.addEventListener("click", () => {
+                task.status = "In Progress";
+                saveDeliveryTasks();
+                renderDeliveries();
+            });
+
+        } else if (task.status === "In Progress") {
+            button.textContent = "Mark as Delivered";
+
+            button.addEventListener("click", () => {
+                task.status = "Completed";
+                saveDeliveryTasks();
+                renderDeliveries();
+            });
+
+        } else {
+            button.textContent = "Delivery Completed";
+            button.disabled = true;
+        }
+
+        info.appendChild(title);
+
+if (task.foodName) {
+    info.appendChild(foodName);
+}
+
+info.append(pickup, destination, fee, status, button);
+        card.appendChild(info);
+        grid.appendChild(card);
+    });
+
+    const available = deliveryTasks.filter(
+        task => task.status === "Available"
+    ).length;
+
+    const completed = deliveryTasks.filter(
+        task => task.status === "Completed"
+    );
+
+    const earnings = completed.reduce(
+        (total, task) => total + Number(task.fee), 0
+    );
+
+    document.getElementById("availableCount").textContent =
+        available + " delivery tasks available";
+
+    document.getElementById("totalEarnings").textContent =
+        "RM " + earnings.toFixed(2) + " earned";
+
+    document.getElementById("completedCount").textContent =
+        completed.length + " deliveries completed";
+}
+
 renderDeliveries();
+
+// Refresh when returning to this page
+window.addEventListener("pageshow", renderDeliveries);
+window.addEventListener("storage", renderDeliveries);
 
 </script>
 <script type="module">

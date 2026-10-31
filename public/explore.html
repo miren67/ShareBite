@@ -405,7 +405,7 @@ max-width: none;
 }
 
 .auth-screen[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .auth-card {
@@ -489,23 +489,22 @@ max-width: none;
   font-weight: 700;
   cursor: pointer;
 }
-/* Fix logout button position 
-.logout-btn {
-position: static !important;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-margin-left: 15px;
-padding: 14px 24px;
-background-color: #245b46;
-color: white;
-border: none;
-border-radius: 16px;
-font-size: 18px;
-cursor: pointer;
-white-space: nowrap;
-vertical-align: middle;
-}*/
+.delete-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px 16px;
+    background: white;
+    color: #c0392b;
+    border: 1px solid #c0392b;
+    border-radius: 9px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+    color: white;
+}
 
 /* Navigation bar */
 .navbar {
@@ -581,6 +580,11 @@ vertical-align: middle;
     background: #e8f2e8;
 }
 
+.nav-menu a.active {
+    background: #245b46;
+    color: white;
+}
+
 /* Logout button */
 .logout-btn {
     position: static;
@@ -628,7 +632,7 @@ vertical-align: middle;
 </head>
 <body>
 
-<section id="authScreen" class="auth-screen">
+<section id="authScreen" class="auth-screen" hidden>
 <div class="auth-card">
 <div class="auth-logo">🥗</div>
 <h1>ShareBite</h1>
@@ -684,9 +688,9 @@ Log In
 <header>
 <div class="logo">🥗 ShareBite</div>
 <nav class="navbar">
-<a href="homepage.html" class="brand">ShareBite</a>
+<!-- <a href="homepage.html" class="brand">ShareBite</a> -->
 <div class="nav-right">
-<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">Browse Here!</button>
 <div class="nav-menu" id="navMenu">
 <a href="homepage.html">Home</a>
 <a href="explore.html">Explore Food</a>
@@ -706,6 +710,13 @@ menuToggle.addEventListener('click', () => {
   const open = navMenu.classList.contains('show');
   menuToggle.setAttribute('aria-expanded', String(open));
   menuToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+  const currentPage = window.location.pathname.split('/').pop() || 'homepage.html';
+
+navMenu.querySelectorAll('a').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
 });
 navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
@@ -786,6 +797,12 @@ emoji: "🍚"
 }
 ];
 const STORAGE_KEY = "sharebite_demo_foods";
+let currentUserId = null;
+
+window.addEventListener("sharebite-auth", (event) => {
+    currentUserId = event.detail.uid;
+    renderFoods();
+});
 const ORDERS_KEY = "sharebite_demo_orders";
 let foods;
 try { const saved = localStorage.getItem(STORAGE_KEY); foods = saved ? JSON.parse(saved) : starterFoods; if (!Array.isArray(foods)) foods = starterFoods; }
@@ -814,10 +831,45 @@ function renderFoods() {
     const priceRow = document.createElement("div"); priceRow.className = "price-row"; priceRow.innerHTML = `<span class="price">RM ${money(food.price)}</span><span class="old-price">RM ${money(food.originalPrice)}</span>`;
     const button = document.createElement("button"); button.className = "primary-btn"; button.style.width = "100%"; button.textContent = food.quantity <= 0 ? "Sold Out" : "Reserve Food"; button.disabled = food.quantity <= 0;
     button.addEventListener("click", () => reserveFood(food.id));
-    info.append(title, location, deadline, quantity, priceRow, button); card.append(picture, info); foodGrid.appendChild(card);
+
+    info.append(title, location, deadline, quantity, priceRow, button);
+
+    if (currentUserId && food.ownerId === currentUserId) {
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "delete-btn";
+      deleteButton.textContent = "Delete Listing";
+      deleteButton.addEventListener("click", () => {
+        deleteFood(food.id);
+      });
+      info.appendChild(deleteButton);
+    }
+
+    card.append(picture, info);
+    foodGrid.appendChild(card);
   });
 }
-function reserveFood(id) {
+function deleteFood(id) {
+    const food = foods.find(item => item.id === id);
+
+    if (!food || !currentUserId || food.ownerId !== currentUserId) {
+        alert("You can only delete your own food listings.");
+        return;
+    }
+
+    const confirmed = confirm(
+        `Are you sure you want to delete "${food.name}"?`
+    );
+
+    if (!confirmed) return;
+
+    foods = foods.filter(item => item.id !== id);
+
+    saveFoods();
+    renderFoods();
+
+    message.textContent = "Food listing deleted successfully!";
+}
+/*function reserveFood(id) {
   const food = foods.find(item => item.id === id); if (!food || food.quantity <= 0) return;
   const wantsDelivery = confirm(`Reserve ${food.name} for RM ${money(food.price)}?\n\nChoose OK for delivery, or Cancel for self-collection.`);
   let orders = []; try { orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"); } catch {}
@@ -825,6 +877,69 @@ function reserveFood(id) {
   food.quantity -= 1; localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); saveFoods();
   message.textContent = wantsDelivery ? "Demo order created! Delivery requested. Order status: Pending." : `Demo reservation created! Please collect from ${food.location}.`;
   renderFoods();
+}*/
+function reserveFood(id) {
+    const food = foods.find(item => item.id === id);
+
+    if (!food || food.quantity <= 0) return;
+
+    const wantsDelivery = confirm(
+        `Reserve ${food.name} for RM ${money(food.price)}?\n\n` +
+        "Choose OK for delivery, or Cancel for self-collection."
+    );
+
+    let deliveryAddress = "";
+
+    if (wantsDelivery) {
+        const address = prompt(
+            "Where would you like your food delivered?\n\n" +
+            "Example: UNITEN Library, Main Entrance"
+        );
+
+        if (address === null) return;
+
+        deliveryAddress = address.trim();
+
+        if (!deliveryAddress) {
+            alert("Please enter your delivery location.");
+            return;
+        }
+    }
+
+    let orders = [];
+
+    try {
+        orders = JSON.parse(
+            localStorage.getItem(ORDERS_KEY) || "[]"
+        );
+
+        if (!Array.isArray(orders)) orders = [];
+    } catch {
+        orders = [];
+    }
+
+    orders.push({
+        id: Date.now(),
+        foodId: food.id,
+        foodName: food.name,
+        price: food.price,
+        location: food.location,
+        deliveryAddress: deliveryAddress,
+        deliveryRequested: wantsDelivery,
+        status: "Pending",
+        createdAt: new Date().toISOString()
+    });
+
+    food.quantity -= 1;
+
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    saveFoods();
+
+    message.textContent = wantsDelivery
+        ? `Delivery requested to ${deliveryAddress}!`
+        : `Reservation created! Collect from ${food.location}.`;
+
+    renderFoods();
 }
 searchInput.addEventListener("input", renderFoods);
 document.getElementById("filters").addEventListener("click", event => {
@@ -963,6 +1078,9 @@ renderFoods();
   let logoutButton = null;
 
   onAuthStateChanged(auth, (user) => {
+    window.dispatchEvent(new CustomEvent("sharebite-auth", {
+    detail: { uid: user ? user.uid : null }
+}));
     if (user) {
       authScreen.hidden = true;
       if (!logoutButton) {
