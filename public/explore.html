@@ -869,7 +869,7 @@ function deleteFood(id) {
 
     message.textContent = "Food listing deleted successfully!";
 }
-function reserveFood(id) {
+/*function reserveFood(id) {
   const food = foods.find(item => item.id === id); if (!food || food.quantity <= 0) return;
   const wantsDelivery = confirm(`Reserve ${food.name} for RM ${money(food.price)}?\n\nChoose OK for delivery, or Cancel for self-collection.`);
   let orders = []; try { orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"); } catch {}
@@ -877,6 +877,69 @@ function reserveFood(id) {
   food.quantity -= 1; localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); saveFoods();
   message.textContent = wantsDelivery ? "Demo order created! Delivery requested. Order status: Pending." : `Demo reservation created! Please collect from ${food.location}.`;
   renderFoods();
+}*/
+function reserveFood(id) {
+    const food = foods.find(item => item.id === id);
+
+    if (!food || food.quantity <= 0) return;
+
+    const wantsDelivery = confirm(
+        `Reserve ${food.name} for RM ${money(food.price)}?\n\n` +
+        "Choose OK for delivery, or Cancel for self-collection."
+    );
+
+    let deliveryAddress = "";
+
+    if (wantsDelivery) {
+        const address = prompt(
+            "Where would you like your food delivered?\n\n" +
+            "Example: UNITEN Library, Main Entrance"
+        );
+
+        if (address === null) return;
+
+        deliveryAddress = address.trim();
+
+        if (!deliveryAddress) {
+            alert("Please enter your delivery location.");
+            return;
+        }
+    }
+
+    let orders = [];
+
+    try {
+        orders = JSON.parse(
+            localStorage.getItem(ORDERS_KEY) || "[]"
+        );
+
+        if (!Array.isArray(orders)) orders = [];
+    } catch {
+        orders = [];
+    }
+
+    orders.push({
+        id: Date.now(),
+        foodId: food.id,
+        foodName: food.name,
+        price: food.price,
+        location: food.location,
+        deliveryAddress: deliveryAddress,
+        deliveryRequested: wantsDelivery,
+        status: "Pending",
+        createdAt: new Date().toISOString()
+    });
+
+    food.quantity -= 1;
+
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    saveFoods();
+
+    message.textContent = wantsDelivery
+        ? `Delivery requested to ${deliveryAddress}!`
+        : `Reservation created! Collect from ${food.location}.`;
+
+    renderFoods();
 }
 searchInput.addEventListener("input", renderFoods);
 document.getElementById("filters").addEventListener("click", event => {
