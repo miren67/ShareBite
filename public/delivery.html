@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShareBite | Deliveries</title>
+<style>
+
+:root {
+--green: #237a52;
+--dark: #183c2c;
+--cream: #f7f8f1;
+--white: #ffffff;
+--muted: #66736a;
+--border: #e1e8df;
+}
+
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+color: var(--dark);
+background: var(--cream);
+}
+
+header {
+background: var(--white);
+border-bottom: 1px solid var(--border);
+padding: 16px 6%;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+flex-wrap: wrap;
+}
+
+.logo {
+color: var(--green);
+font-size: 25px;
+font-weight: 800;
+}
+
+nav {
+display: flex;
+gap: 18px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+nav a {
+text-decoration: none;
+color: var(--dark);
+font-size: 14px;
+font-weight: 600;
+}
+
+button {
+cursor: pointer;
+font: inherit;
+}
+
+.primary-btn {
+background: var(--green);
+color: white;
+border: none;
+border-radius: 9px;
+padding: 11px 16px;
+font-weight: 700;
+}
+
+.primary-btn:hover {
+background: var(--dark);
+}
+
+.hero {
+padding: 54px 6%;
+background: #e7f1e6;
+display: grid;
+grid-template-columns: 1.4fr 1fr;
+gap: 30px;
+align-items: center;
+}
+
+.hero h1 {
+font-size: clamp(32px, 5vw, 52px);
+line-height: 1.1;
+margin: 12px 0;
+}
+
+.hero p {
+color: #4f6556;
+line-height: 1.7;
+max-width: 520px;
+}
+
+.eyebrow {
+color: var(--green);
+text-transform: uppercase;
+font-size: 12px;
+letter-spacing: 1.5px;
+font-weight: 800;
+}
+
+.hero-visual {
+background: white;
+border-radius: 22px;
+padding: 30px;
+text-align: center;
+box-shadow: 0 8px 30px #183c2c10;
+}
+
+.hero-visual .food-emoji {
+font-size: 90px;
+}
+
+.hero-visual h3 {
+margin-bottom: 6px;
+}
+
+.hero-visual p {
+margin: 0 auto;
+}
+
+main {
+padding: 35px 6% 60px;
+}
+
+.section-heading {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
+
+.section-heading h2 {
+margin: 0;
+font-size: 27px;
+}
+
+.search-bar {
+width: 100%;
+max-width: 360px;
+padding: 12px;
+border: 1px solid var(--border);
+border-radius: 9px;
+background: white;
+font: inherit;
+}
+
+.filters {
+display: flex;
+gap: 9px;
+flex-wrap: wrap;
+margin-bottom: 22px;
+}
+
+.filter-btn {
+border: 1px solid var(--border);
+background: white;
+padding: 9px 15px;
+border-radius: 30px;
+color: var(--dark);
+}
+
+.filter-btn.active {
+background: var(--green);
+color: white;
+border-color: var(--green);
+}
+
+.food-grid {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 20px;
+}
+
+.food-card {
+background: white;
+border: 1px solid var(--border);
+border-radius: 15px;
+overflow: hidden;
+}
+
+.food-picture {
+min-height: 145px;
+background: #eaf1e8;
+display: grid;
+place-items: center;
+font-size: 64px;
+position: relative;
+}
+
+.discount-tag {
+position: absolute;
+top: 12px;
+left: 12px;
+background: #fff0cf;
+color: #805517;
+border-radius: 6px;
+padding: 6px 9px;
+font-size: 12px;
+font-weight: 800;
+}
+
+.food-info {
+padding: 17px;
+}
+
+.food-info h3 {
+margin: 0 0 8px;
+}
+
+.food-info p {
+color: var(--muted);
+font-size: 13px;
+line-height: 1.5;
+margin: 6px 0;
+}
+
+.price-row {
+display: flex;
+align-items: center;
+gap: 9px;
+margin: 13px 0;
+}
+
+.price {
+color: var(--green);
+font-size: 23px;
+font-weight: 800;
+}
+
+.old-price {
+color: #89928b;
+text-decoration: line-through;
+font-size: 13px;
+}
+
+.food-info .primary-btn {
+width: 100%;
+margin-top: 8px;
+}
+
+.empty-state {
+padding: 35px;
+text-align: center;
+color: var(--muted);
+grid-column: 1 / -1;
+}
+
+.feature-strip {
+margin-top: 40px;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 16px;
+}
+
+.feature {
+background: white;
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 20px;
+}
+
+.feature .icon {
+font-size: 27px;
+}
+
+.feature p {
+font-size: 13px;
+line-height: 1.6;
+color: var(--muted);
+}
+
+.form-panel {
+display: none;
+margin-top: 35px;
+padding: 24px;
+background: white;
+border: 1px solid var(--border);
+border-radius: 15px;
+max-width: 650px;
+}
+
+.form-panel.open {
+display: block;
+}
+
+.form-panel h2 {
+margin-top: 0;
+}
+
+.form-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+
+.form-field {
+display: flex;
+flex-direction: column;
+gap: 7px;
+}
+
+.form-field.full {
+grid-column: 1 / -1;
+}
+
+.form-field label {
+font-size: 13px;
+font-weight: 700;
+}
+
+.form-field input,
+.form-field select {
+width: 100%;
+padding: 11px;
+border: 1px solid var(--border);
+border-radius: 8px;
+font: inherit;
+}
+
+.form-actions {
+display: flex;
+gap: 10px;
+margin-top: 18px;
+}
+
+.secondary-btn {
+background: white;
+border: 1px solid var(--border);
+padding: 10px 15px;
+border-radius: 9px;
+}
+
+footer {
+padding: 25px 6%;
+background: var(--dark);
+color: white;
+text-align: center;
+font-size: 13px;
+}
+
+#message {
+margin: 15px 0;
+font-size: 14px;
+font-weight: 700;
+}
+
+@media(max-width: 850px) {
+.hero {
+grid-template-columns: 1fr;
+}
+
+.food-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+@media(max-width: 550px) {
+header {
+padding: 15px 5%;
+}
+
+nav {
+gap: 12px;
+}
+
+.hero, main {
+padding-left: 5%;
+padding-right: 5%;
+}
+
+.food-grid,
+.feature-strip,
+.form-grid {
+grid-template-columns: 1fr;
+}
+
+.form-field.full {
+grid-column: auto;
+}
+
+.search-bar {
+max-width: none;
+}
+}
+/* SHAREBITE LOGIN PAGE */
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 24px;
+  background: linear-gradient(135deg, #f4f7ed, #e4efdc);
+  font-family: inherit;
+}
+
+.auth-screen[hidden] {
+  display: none;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 32px;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 12px 40px rgba(30, 60, 40, 0.12);
+}
+
+.auth-logo {
+  font-size: 42px;
+  text-align: center;
+}
+
+.auth-card h1,
+.auth-card h2,
+.auth-subtitle {
+  text-align: center;
+}
+
+.auth-card h1 {
+  margin-bottom: 4px;
+  color: #285943;
+}
+
+.auth-subtitle {
+  margin-top: 0;
+  margin-bottom: 28px;
+  color: #66736a;
+}
+
+.auth-card h2 {
+  margin-bottom: 8px;
+}
+
+.auth-card label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.auth-card input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d4ddd3;
+  border-radius: 9px;
+  font: inherit;
+}
+
+.auth-card input:focus {
+  outline: 2px solid #6d9b78;
+  border-color: #6d9b78;
+}
+
+.auth-card #authSubmit {
+  width: 100%;
+  margin-top: 22px;
+  cursor: pointer;
+}
+
+#authMessage {
+  color: #b42318;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: 14px;
+}
+
+#authSwitch {
+  border: none;
+  background: none;
+  color: #285943;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* Fix logout button position 
+.logout-btn {
+position: static !important;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+margin-left: 15px;
+padding: 14px 24px;
+background-color: #245b46;
+color: white;
+border: none;
+border-radius: 16px;
+font-size: 18px;
+cursor: pointer;
+white-space: nowrap;
+vertical-align: middle;
+}*/
+
+/* Navigation bar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: white;
+    position: relative;
+    z-index: 1000;
+}
+
+.brand {
+    color: #245b46;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+/* Three-line button */
+.menu-toggle {
+    background: #245b46;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.menu-toggle:hover {
+    background: #194735;
+}
+
+/* Dropdown menu - hidden by default */
+.nav-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 210px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Show menu when clicked */
+.nav-menu.show {
+    display: flex;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #245b46;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+.nav-menu a:hover {
+    background: #e8f2e8;
+}
+
+/* Logout button */
+.logout-btn {
+    position: static;
+    background: #245b46;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-size: 18px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.logout-btn:hover {
+    background: #194735;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 14px 16px;
+    }
+
+    .brand {
+        font-size: 23px;
+    }
+
+    .nav-right {
+        gap: 8px;
+    }
+
+    .logout-btn {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+
+    .menu-toggle {
+        padding: 9px 12px;
+        font-size: 24px;
+    }
+}
+
+
+</style>
+</head>
+<body>
+
+<section id="authScreen" class="auth-screen">
+<div class="auth-card">
+<div class="auth-logo">🥗</div>
+<h1>ShareBite</h1>
+<p class="auth-subtitle">Good food. Shared together.</p>
+
+<h2 id="authTitle">Welcome back!</h2>
+<p id="authDescription">Log in to continue to ShareBite.</p>
+
+<form id="authForm">
+<div id="nameField" hidden>
+<label for="authName">Full name</label>
+<input
+id="authName"
+type="text"
+placeholder="Enter your name"
+autocomplete="name"
+/>
+</div>
+
+<label for="authEmail">Email address</label>
+<input
+id="authEmail"
+type="email"
+placeholder="you@example.com"
+autocomplete="email"
+required
+/>
+
+<label for="authPassword">Password</label>
+<input
+id="authPassword"
+type="password"
+placeholder="At least 6 characters"
+autocomplete="current-password"
+minlength="6"
+required
+/>
+
+<button id="authSubmit" type="submit" class="primary-btn">
+Log In
+</button>
+</form>
+
+<p id="authMessage" role="status" aria-live="polite"></p>
+
+<p class="auth-switch">
+<span id="authSwitchText">Don't have an account?</span>
+<button id="authSwitch" type="button">Create one</button>
+</p>
+</div>
+</section>
+
+<header>
+<div class="logo">🥗 ShareBite</div>
+<nav class="navbar">
+<a href="index.html" class="brand">ShareBite</a>
+<div class="nav-right">
+<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+<div class="nav-menu" id="navMenu">
+<a href="homepage.html">Home</a>
+<a href="explore.html">Explore Food</a>
+<a href="post-food.html">Post Food</a>
+<a href="delivery.html">Deliveries</a>
+</div>
+</div>
+</nav>
+</header>
+<main>
+<section id="deliveryDashboard" style="padding-top: 40px;">
+
+<div class="section-heading">
+<div>
+<span class="eyebrow">Student side income</span>
+<h2>Earn with ShareBite 🚲</h2>
+<p style="color: #66736a;">
+Deliver food around campus and earn extra money between classes.
+</p>
+</div>
+</div>
+
+<!-- DELIVERY STATISTICS -->
+<div class="feature-strip" style="margin-top: 20px;">
+
+<div class="feature">
+<div class="icon">📦</div>
+<h3>Available Deliveries</h3>
+<p id="availableCount">3 delivery tasks available</p>
+</div>
+
+<div class="feature">
+<div class="icon">💰</div>
+<h3>Your Earnings</h3>
+<p id="totalEarnings">RM 0.00 earned</p>
+</div>
+
+<div class="feature">
+<div class="icon">✅</div>
+<h3>Completed Deliveries</h3>
+<p id="completedCount">0 deliveries completed</p>
+</div>
+
+</div>
+
+<!-- DELIVERY JOB CARDS -->
+ <div id="deliveryGrid" class="food-grid" style="margin-top: 24px;">
+  <!-- Initial cards are included as a fallback so the delivery tasks are visible
+       even if JavaScript does not run. The script below replaces these with
+       interactive cards when it initializes successfully. -->
+  <article class="food-card"><div class="food-info">
+    <h3>🚲 Campus Delivery #1</h3>
+    <p>📦 Pickup: Campus Cafeteria</p><p>📍 Deliver to: Student Residence A</p>
+    <div class="price">RM 2.00</div><p>Status: Available</p>
+    <button class="primary-btn" style="width:100%" type="button" onclick="alert('Please refresh the page if delivery actions are unavailable.')">Accept Delivery</button>
+  </div></article>
+  <article class="food-card"><div class="food-info">
+    <h3>🚲 Campus Delivery #2</h3>
+    <p>📦 Pickup: Food Court</p><p>📍 Deliver to: Student Residence B</p>
+    <div class="price">RM 3.00</div><p>Status: Available</p>
+    <button class="primary-btn" style="width:100%" type="button" onclick="alert('Please refresh the page if delivery actions are unavailable.')">Accept Delivery</button>
+  </div></article>
+  <article class="food-card"><div class="food-info">
+    <h3>🚲 Campus Delivery #3</h3>
+    <p>📦 Pickup: Campus Cafe</p><p>📍 Deliver to: Academic Block</p>
+    <div class="price">RM 2.50</div><p>Status: Available</p>
+    <button class="primary-btn" style="width:100%" type="button" onclick="alert('Please refresh the page if delivery actions are unavailable.')">Accept Delivery</button>
+  </div></article>
+</div>
+
+</section>
+</main>
+<footer><strong>ShareBite</strong> · Good food, less waste, stronger campus communities.<br><br>Student hackathon prototype · Sample listings are for demonstration.</footer>
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const navMenu = document.getElementById('navMenu');
+menuToggle.addEventListener('click', () => {
+  navMenu.classList.toggle('show');
+  const open = navMenu.classList.contains('show');
+  menuToggle.setAttribute('aria-expanded', String(open));
+  menuToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+});
+navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+  navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
+}));
+document.addEventListener('click', event => {
+  if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
+    navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
+  }
+});
+</script>
+<script>
+const deliveryTasks = [
+  { id: 1, pickup: "Campus Cafeteria", destination: "Student Residence A", fee: 2.00, status: "Available" },
+  { id: 2, pickup: "Food Court", destination: "Student Residence B", fee: 3.00, status: "Available" },
+  { id: 3, pickup: "Campus Cafe", destination: "Academic Block", fee: 2.50, status: "Available" }
+];
+
+let completedDeliveries = 0;
+let totalEarnings = 0;
+
+function renderDeliveries() {
+  const grid = document.getElementById("deliveryGrid");
+  grid.innerHTML = "";
+
+  deliveryTasks.forEach(task => {
+    const card = document.createElement("article");
+    card.className = "food-card";
+    const info = document.createElement("div");
+    info.className = "food-info";
+
+    const title = document.createElement("h3");
+    title.textContent = "🚲 Campus Delivery #" + task.id;
+    const pickup = document.createElement("p");
+    pickup.textContent = "📦 Pickup: " + task.pickup;
+    const destination = document.createElement("p");
+    destination.textContent = "📍 Deliver to: " + task.destination;
+    const fee = document.createElement("div");
+    fee.className = "price";
+    fee.textContent = "RM " + task.fee.toFixed(2);
+    const status = document.createElement("p");
+    status.textContent = "Status: " + task.status;
+    const button = document.createElement("button");
+    button.className = "primary-btn";
+    button.style.width = "100%";
+
+    if (task.status === "Available") {
+      button.textContent = "Accept Delivery";
+      button.addEventListener("click", () => { task.status = "In Progress"; renderDeliveries(); });
+    } else if (task.status === "In Progress") {
+      button.textContent = "Mark as Delivered";
+      button.addEventListener("click", () => {
+        task.status = "Completed";
+        completedDeliveries++;
+        totalEarnings += task.fee;
+        renderDeliveries();
+      });
+    } else {
+      button.textContent = "Delivery Completed";
+      button.disabled = true;
+    }
+
+    info.append(title, pickup, destination, fee, status, button);
+    card.appendChild(info);
+    grid.appendChild(card);
+  });
+
+  const available = deliveryTasks.filter(task => task.status === "Available").length;
+  document.getElementById("availableCount").textContent = available + " delivery tasks available";
+  document.getElementById("totalEarnings").textContent = "RM " + totalEarnings.toFixed(2) + " earned";
+  document.getElementById("completedCount").textContent = completedDeliveries + " deliveries completed";
+}
+renderDeliveries();
+
+</script>
+<script type="module">
+  import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut,
+    updateProfile
+  } from
+    "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+  // STEP 1: Replace these example values with your Firebase config.
+  const firebaseConfig = {
+    apiKey: "AIzaSyB3fDcwoqA7tAioihHHV3TvTc0gchal9nA",
+    authDomain: "sharebite-34f5e.firebaseapp.com",
+    projectId: "sharebite-34f5e",
+    appId: "1:630375928713:web:5f8367bcaf3ebed45d8758"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  const authScreen = document.getElementById("authScreen");
+  const authForm = document.getElementById("authForm");
+  const authTitle = document.getElementById("authTitle");
+  const authDescription = document.getElementById("authDescription");
+  const authSubmit = document.getElementById("authSubmit");
+  const authSwitch = document.getElementById("authSwitch");
+  const authSwitchText = document.getElementById("authSwitchText");
+  const authMessage = document.getElementById("authMessage");
+  const nameField = document.getElementById("nameField");
+  const authName = document.getElementById("authName");
+  const authEmail = document.getElementById("authEmail");
+  const authPassword = document.getElementById("authPassword");
+
+  let isRegistering = false;
+
+  // Switch between Login and Create Account screens.
+  authSwitch.addEventListener("click", () => {
+    isRegistering = !isRegistering;
+    authMessage.textContent = "";
+    authForm.reset();
+
+    nameField.hidden = !isRegistering;
+    authName.required = isRegistering;
+    authPassword.autocomplete = isRegistering
+      ? "new-password"
+      : "current-password";
+
+    authTitle.textContent = isRegistering
+      ? "Create your account"
+      : "Welcome back!";
+
+    authDescription.textContent = isRegistering
+      ? "Join the ShareBite community."
+      : "Log in to continue to ShareBite.";
+
+    authSubmit.textContent = isRegistering
+      ? "Create Account"
+      : "Log In";
+
+    authSwitchText.textContent = isRegistering
+      ? "Already have an account?"
+      : "Don't have an account?";
+
+    authSwitch.textContent = isRegistering
+      ? "Log in"
+      : "Create one";
+  });
+
+  // Register a new user or log in an existing user.
+  authForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    authMessage.textContent = "";
+    authSubmit.disabled = true;
+
+    const email = authEmail.value.trim();
+    const password = authPassword.value;
+
+    try {
+      if (isRegistering) {
+        const name = authName.value.trim();
+
+        const credential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        await updateProfile(credential.user, {
+          displayName: name
+        });
+      } else {
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+      }
+    } catch (error) {
+      const messages = {
+        "auth/email-already-in-use":
+          "This email already has an account. Please log in.",
+        "auth/invalid-email":
+          "Please enter a valid email address.",
+        "auth/invalid-credential":
+          "Email or password is incorrect.",
+        "auth/weak-password":
+          "Please choose a stronger password.",
+        "auth/too-many-requests":
+          "Too many attempts. Please try again later.",
+        "auth/network-request-failed":
+          "Network problem. Check your internet connection."
+      };
+
+      authMessage.textContent =
+        messages[error.code] ||
+        "Something went wrong. Please try again.";
+    } finally {
+      authSubmit.disabled = false;
+    }
+  });
+
+  // Keep the login screen visible until Firebase confirms sign-in.
+  let logoutButton = null;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      authScreen.hidden = true;
+      if (!logoutButton) {
+        logoutButton = document.createElement("button");
+        logoutButton.textContent = "Log Out";
+        logoutButton.type = "button";
+
+        logoutButton.className = "logout-btn";
+        logoutButton.style.position = "static";
+
+        logoutButton.addEventListener("click", async () => {
+          try {
+            await signOut(auth);
+          } catch (error) {
+            alert("Unable to log out. Please try again.");
+          }
+        });
+
+        document.querySelector(".nav-right").appendChild(logoutButton);
+      }
+
+      logoutButton.hidden = false;
+    } else {
+      authScreen.hidden = false;
+
+      if (logoutButton) {
+        logoutButton.hidden = true;
+      }
+    }
+  });
+</script>
+</body>
+</html>

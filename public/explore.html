@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ShareBite | Campus Food Rescue</title>
-
+<title>ShareBite | Explore Food</title>
 <style>
+
 :root {
 --green: #237a52;
 --dark: #183c2c;
@@ -489,11 +489,145 @@ max-width: none;
   font-weight: 700;
   cursor: pointer;
 }
+/* Fix logout button position 
+.logout-btn {
+position: static !important;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+margin-left: 15px;
+padding: 14px 24px;
+background-color: #245b46;
+color: white;
+border: none;
+border-radius: 16px;
+font-size: 18px;
+cursor: pointer;
+white-space: nowrap;
+vertical-align: middle;
+}*/
+
+/* Navigation bar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: white;
+    position: relative;
+    z-index: 1000;
+}
+
+.brand {
+    color: #245b46;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+/* Three-line button */
+.menu-toggle {
+    background: #245b46;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.menu-toggle:hover {
+    background: #194735;
+}
+
+/* Dropdown menu - hidden by default */
+.nav-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 210px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Show menu when clicked */
+.nav-menu.show {
+    display: flex;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #245b46;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+.nav-menu a:hover {
+    background: #e8f2e8;
+}
+
+/* Logout button */
+.logout-btn {
+    position: static;
+    background: #245b46;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-size: 18px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.logout-btn:hover {
+    background: #194735;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 14px 16px;
+    }
+
+    .brand {
+        font-size: 23px;
+    }
+
+    .nav-right {
+        gap: 8px;
+    }
+
+    .logout-btn {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+
+    .menu-toggle {
+        padding: 9px 12px;
+        font-size: 24px;
+    }
+}
+
+
 </style>
 </head>
-
 <body>
-    <!-- SHAREBITE LOGIN SCREEN -->
+
 <section id="authScreen" class="auth-screen">
 <div class="auth-card">
 <div class="auth-logo">🥗</div>
@@ -546,185 +680,42 @@ Log In
 </p>
 </div>
 </section>
-<!-- END SHAREBITE LOGIN SCREEN -->
 
 <header>
-<div class="logo">🥗 ShareBite</div>
-
-<nav>
-<a href="#marketplace">Explore Food</a>
-<a href="#how-it-works">How It Works</a>
-<button class="primary-btn" id="postTopBtn">+ Post Food</button>
+<div class="logo">🥗 ShareBite</div>
+<nav class="navbar">
+<a href="homepage.html" class="brand">ShareBite</a>
+<div class="nav-right">
+<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+<div class="nav-menu" id="navMenu">
+<a href="homepage.html">Home</a>
+<a href="explore.html">Explore Food</a>
+<a href="post-food.html">Post Food</a>
+<a href="delivery.html">Deliveries</a>
+</div>
+</div>
 </nav>
 </header>
-
-<section class="hero">
-<div>
-<span class="eyebrow">Good food. Less waste.</span>
-<h1>Save food.<br>Save money.<br>Earn together.</h1>
-<p>
-Discover affordable meals around campus, rescue surplus food,
-and earn extra income by delivering orders to fellow students.
-</p>
-<button class="primary-btn" id="exploreBtn">Explore Available Food →</button>
-</div>
-
-<div class="hero-visual">
-<div class="food-emoji">🍱</div>
-<h3>Good food deserves a second chance.</h3>
-<p>Affordable meals and new opportunities, all in one place.</p>
-</div>
-</section>
-
-<main>
-<section id="marketplace">
-<div class="section-heading">
-<h2>Available Near You</h2>
-<input
-id="searchInput"
-class="search-bar"
-type="search"
-placeholder="Search meals or locations..."
-aria-label="Search meals or locations"
->
-</div>
-
-<div class="filters" id="filters">
-<button class="filter-btn active" data-category="All">All Food</button>
-<button class="filter-btn" data-category="Meals">Meals</button>
-<button class="filter-btn" data-category="Snacks">Snacks</button>
-<button class="filter-btn" data-category="Drinks">Drinks</button>
-</div>
-
-<div id="foodGrid" class="food-grid"></div>
-<p id="message" role="status"></p>
-</section>
-
-<section class="feature-strip" id="how-it-works">
-<div class="feature">
-<div class="icon">🥡</div>
-<h3>Share Surplus Food</h3>
-<p>Post extra food or discounted meals for other students to discover.</p>
-</div>
-
-<div class="feature">
-<div class="icon">💚</div>
-<h3>Eat for Less</h3>
-<p>Find affordable food and choose convenient campus collection points.</p>
-</div>
-
-<div class="feature">
-<div class="icon">🚲</div>
-<h3>Earn by Delivering</h3>
-<p>Take delivery requests and earn a fee for completed deliveries.</p>
-</div>
-</section>
-
-<!-- STUDENT DELIVERY DASHBOARD -->
-<section id="deliveries" style="padding-top: 40px;">
-
-<div class="section-heading">
-<div>
-<span class="eyebrow">Student side income</span>
-<h2>Earn with ShareBite 🚲</h2>
-<p style="color: #66736a;">
-Deliver food around campus and earn extra money between classes.
-</p>
-</div>
-</div>
-
-<!-- DELIVERY STATISTICS -->
-<div class="feature-strip" style="margin-top: 20px;">
-
-<div class="feature">
-<div class="icon">📦</div>
-<h3>Available Deliveries</h3>
-<p id="availableCount">3 delivery tasks available</p>
-</div>
-
-<div class="feature">
-<div class="icon">💰</div>
-<h3>Your Earnings</h3>
-<p id="totalEarnings">RM 0.00 earned</p>
-</div>
-
-<div class="feature">
-<div class="icon">✅</div>
-<h3>Completed Deliveries</h3>
-<p id="completedCount">0 deliveries completed</p>
-</div>
-
-</div>
-
-<!-- DELIVERY JOB CARDS -->
- <div id="deliveryGrid" class="food-grid" style="margin-top: 24px;">
-</div>
-
-</section>
-<!-- END OF STUDENT DELIVERY DASHBOARD -->
-
-<section id="postForm" class="form-panel">
-<h2>Post a Food Listing</h2>
-<p style="color:#66736a;font-size:14px">
-Help another student find an affordable meal.
-</p>
-
-<form id="foodForm">
-<div class="form-grid">
-<div class="form-field">
-<label for="foodName">Food name</label>
-<input id="foodName" required maxlength="60" placeholder="e.g. Chicken Rice">
-</div>
-
-<div class="form-field">
-<label for="category">Category</label>
-<select id="category" required>
-<option value="Meals">Meals</option>
-<option value="Snacks">Snacks</option>
-<option value="Drinks">Drinks</option>
-</select>
-</div>
-
-<div class="form-field">
-<label for="foodPrice">Discounted price (RM)</label>
-<input id="foodPrice" type="number" required min="0.50" max="500" step="0.10">
-</div>
-
-<div class="form-field">
-<label for="originalPrice">Original price (RM)</label>
-<input id="originalPrice" type="number" required min="0.50" max="500" step="0.10">
-</div>
-
-<div class="form-field">
-<label for="quantity">Available portions</label>
-<input id="quantity" type="number" required min="1" max="100" step="1" value="1">
-</div>
-
-<div class="form-field">
-<label for="location">Collection location</label>
-<input id="location" required maxlength="100" placeholder="e.g. Campus Cafeteria">
-</div>
-
-<div class="form-field full">
-<label for="deadline">Collection deadline</label>
-<input id="deadline" type="datetime-local" required>
-</div>
-</div>
-
-<div class="form-actions">
-<button class="primary-btn" type="submit">Publish Listing</button>
-<button class="secondary-btn" type="button" id="cancelBtn">Cancel</button>
-</div>
-</form>
-</section>
-</main>
-
-<footer>
-<strong>ShareBite</strong> · Good food, less waste, stronger campus communities.
-<br><br>
-Student hackathon prototype · Sample listings are for demonstration.
-</footer>
-
+<main><section id="marketplace"><div class="section-heading"><h2>Available Near You</h2><input id="searchInput" class="search-bar" type="search" placeholder="Search meals or locations..." aria-label="Search meals or locations"></div><div class="filters" id="filters"><button class="filter-btn active" data-category="All">All Food</button><button class="filter-btn" data-category="Meals">Meals</button><button class="filter-btn" data-category="Snacks">Snacks</button><button class="filter-btn" data-category="Drinks">Drinks</button></div><div id="foodGrid" class="food-grid"></div><p id="message" role="status"></p></section></main>
+<footer><strong>ShareBite</strong> · Good food, less waste, stronger campus communities.<br><br>Student hackathon prototype · Sample listings are for demonstration.</footer>
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const navMenu = document.getElementById('navMenu');
+menuToggle.addEventListener('click', () => {
+  navMenu.classList.toggle('show');
+  const open = navMenu.classList.contains('show');
+  menuToggle.setAttribute('aria-expanded', String(open));
+  menuToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+});
+navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+  navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
+}));
+document.addEventListener('click', event => {
+  if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
+    navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
+  }
+});
+</script>
 <script>
 const starterFoods = [
 {
@@ -794,376 +785,54 @@ deadline: "8:30 PM",
 emoji: "🍚"
 }
 ];
-
 const STORAGE_KEY = "sharebite_demo_foods";
 const ORDERS_KEY = "sharebite_demo_orders";
-
 let foods;
-
-try {
-const saved = localStorage.getItem(STORAGE_KEY);
-foods = saved ? JSON.parse(saved) : starterFoods;
-if (!Array.isArray(foods)) foods = starterFoods;
-} catch {
-foods = starterFoods;
-}
-
+try { const saved = localStorage.getItem(STORAGE_KEY); foods = saved ? JSON.parse(saved) : starterFoods; if (!Array.isArray(foods)) foods = starterFoods; }
+catch { foods = starterFoods; }
 let activeCategory = "All";
-
 const foodGrid = document.getElementById("foodGrid");
 const searchInput = document.getElementById("searchInput");
 const message = document.getElementById("message");
-const postForm = document.getElementById("postForm");
-
-function saveFoods() {
-try {
-localStorage.setItem(STORAGE_KEY, JSON.stringify(foods));
-} catch {
-message.textContent = "Changes may not persist in this browser.";
-}
-}
-
-function money(amount) {
-return Number(amount).toFixed(2);
-}
-
+function saveFoods() { localStorage.setItem(STORAGE_KEY, JSON.stringify(foods)); }
+function money(amount) { return Number(amount).toFixed(2); }
 function renderFoods() {
-const query = searchInput.value.trim().toLowerCase();
-
-const filtered = foods.filter(food => {
-const matchesCategory =
-activeCategory === "All" 
-food.category === activeCategory;
-
-const matchesSearch =
-food.name.toLowerCase().includes(query) 
-food.location.toLowerCase().includes(query);
-
-return matchesCategory && matchesSearch;
-});
-
-foodGrid.innerHTML = "";
-
-if (filtered.length === 0) {
-foodGrid.innerHTML = `
-<div class="empty-state">
-<h3>No food found</h3>
-<p>Try another search or post a new food listing.</p>
-</div>`;
-return;
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = foods.filter(food => (activeCategory === "All" || food.category === activeCategory) && (food.name.toLowerCase().includes(query) || food.location.toLowerCase().includes(query)));
+  foodGrid.innerHTML = "";
+  if (!filtered.length) { foodGrid.innerHTML = '<div class="empty-state"><h3>No food found</h3><p>Try another search or post a new food listing.</p></div>'; return; }
+  filtered.forEach(food => {
+    const discount = food.originalPrice > 0 ? Math.round((1 - food.price / food.originalPrice) * 100) : 0;
+    const card = document.createElement("article"); card.className = "food-card";
+    const picture = document.createElement("div"); picture.className = "food-picture";
+    picture.innerHTML = `<span>${food.emoji || "🍽"}</span><span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>`;
+    const info = document.createElement("div"); info.className = "food-info";
+    const title = document.createElement("h3"); title.textContent = food.name;
+    const location = document.createElement("p"); location.textContent = "📍 " + food.location;
+    const deadline = document.createElement("p"); deadline.textContent = "🕒 Collect by " + food.deadline;
+    const quantity = document.createElement("p"); quantity.textContent = food.quantity + " portion(s) available";
+    const priceRow = document.createElement("div"); priceRow.className = "price-row"; priceRow.innerHTML = `<span class="price">RM ${money(food.price)}</span><span class="old-price">RM ${money(food.originalPrice)}</span>`;
+    const button = document.createElement("button"); button.className = "primary-btn"; button.style.width = "100%"; button.textContent = food.quantity <= 0 ? "Sold Out" : "Reserve Food"; button.disabled = food.quantity <= 0;
+    button.addEventListener("click", () => reserveFood(food.id));
+    info.append(title, location, deadline, quantity, priceRow, button); card.append(picture, info); foodGrid.appendChild(card);
+  });
 }
-
-filtered.forEach(food => {
-const discount = food.originalPrice > 0
-? Math.round((1 - food.price / food.originalPrice) * 100)
-: 0;
-
-const card = document.createElement("article");
-card.className = "food-card";
-/*const picture = document.createElement("div");
-picture.className = "food-picture";
-picture.innerHTML = `#
-<span>${food.emoji "🍽"}</span>
-<span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>";*/
-
-const picture = document.createElement("div");
-picture.className = "food-picture";
-
-picture.innerHTML = `
-<span>${food.emoji || "🍽"}</span>
-<span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>`;
-
-const info = document.createElement("div");
-info.className = "food-info";
-
-const title = document.createElement("h3");
-title.textContent = food.name;
-
-const location = document.createElement("p");
-location.textContent = "📍" + food.location;
-
-const deadline = document.createElement("p");
-deadline.textContent = "🕒Collect by " + food.deadline;
-
-const quantity = document.createElement("p");
-quantity.textContent = food.quantity + " portion(s) available";
-
-const priceRow = document.createElement("div");
-priceRow.className = "price-row";
-priceRow.innerHTML = `
-<span class="price">RM ${money(food.price)}</span>
-<span class="old-price">RM ${money(food.originalPrice)}</span>`;
-
-const orderButton = document.createElement("button");
-orderButton.className = "primary-btn";
-orderButton.style.width = "100%";
-orderButton.textContent = "Reserve Food";
-orderButton.disabled = food.quantity <= 0;
-
-if (food.quantity <= 0) {
-orderButton.textContent = "Sold Out";
-}
-
-orderButton.addEventListener("click", () => reserveFood(food.id));
-
-info.append(title, location, deadline, quantity, priceRow, orderButton);
-card.append(picture, info);
-foodGrid.appendChild(card);
-});
-}
-
 function reserveFood(id) {
-const food = foods.find(item => item.id === id);
-if (!food.quantity <= 0) return;
-
-const wantsDelivery = confirm(
-"Reserve " + food.name+ " for RM " + money(food.price) +
-"?\n\nChoose OK for delivery, or Cancel for self-collection."
-);
-
-const orders = (() => {
-try {
-return JSON.parse(localStorage.getItem(ORDERS_KEY)||"[]");
-} catch {
-return [];
+  const food = foods.find(item => item.id === id); if (!food || food.quantity <= 0) return;
+  const wantsDelivery = confirm(`Reserve ${food.name} for RM ${money(food.price)}?\n\nChoose OK for delivery, or Cancel for self-collection.`);
+  let orders = []; try { orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"); } catch {}
+  orders.push({ id: Date.now(), foodId: food.id, foodName: food.name, price: food.price, location: food.location, deliveryRequested: wantsDelivery, status: "Pending" });
+  food.quantity -= 1; localStorage.setItem(ORDERS_KEY, JSON.stringify(orders)); saveFoods();
+  message.textContent = wantsDelivery ? "Demo order created! Delivery requested. Order status: Pending." : `Demo reservation created! Please collect from ${food.location}.`;
+  renderFoods();
 }
-})();
-
-const order = {
-id: Date.now(),
-foodId: food.id,
-foodName: food.name,
-price: food.price,
-location: food.location,
-deliveryRequested: wantsDelivery,
-status: "Pending"
-};
-
-orders.push(order);
-food.quantity -= 1;
-
-try {
-localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-saveFoods();
-message.textContent = wantsDelivery
-? "Demo order created! Delivery requested. Order status: Pending."
-: "Demo reservation created! Please collect from " + food.location + ".";
-} catch {
-food.quantity += 1;
-message.textContent = "Unable to save this demo order in your browser.";
-}
-
-renderFoods();
-}
-
-function openPostForm() {
-postForm.classList.add("open");
-postForm.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-document.getElementById("postTopBtn").addEventListener("click", openPostForm);
-
-document.getElementById("exploreBtn").addEventListener("click", () => {
-document.getElementById("marketplace").scrollIntoView({ behavior: "smooth" });
-});
-
-document.getElementById("cancelBtn").addEventListener("click", () => {
-postForm.classList.remove("open");
-document.getElementById("foodForm").reset();
-});
-
 searchInput.addEventListener("input", renderFoods);
-
 document.getElementById("filters").addEventListener("click", event => {
-const button = event.target.closest("[data-category]");
-if (!button) return;
-
-activeCategory = button.dataset.category;
-
-document.querySelectorAll(".filter-btn").forEach(item => {
-item.classList.toggle("active", item === button);
+  const button = event.target.closest("[data-category]"); if (!button) return; activeCategory = button.dataset.category;
+  document.querySelectorAll(".filter-btn").forEach(item => item.classList.toggle("active", item === button)); renderFoods();
 });
-
 renderFoods();
-});
-
-document.getElementById("foodForm").addEventListener("submit", event => {
-event.preventDefault();
-
-const name = document.getElementById("foodName").value.trim();
-const category = document.getElementById("category").value;
-const price = Number(document.getElementById("foodPrice").value);
-const originalPrice = Number(document.getElementById("originalPrice").value);
-const quantity = Number(document.getElementById("quantity").value);
-const location = document.getElementById("location").value.trim();
-const deadlineValue = document.getElementById("deadline").value;
-const deadlineDate = new Date(deadlineValue);
-
-if (
-!name || !location || !deadlineValue ||
-!Number.isFinite(price) || !Number.isFinite(originalPrice) ||
-!Number.isInteger(quantity) || quantity < 1 ||
-price <= 0 || originalPrice <= 0 ||
-price > originalPrice ||
-Number.isNaN(deadlineDate.getTime()) ||
-deadlineDate <= new Date()
-) {
-
-alert("Please check your details. The discounted price must not exceed the original price, and the collection deadline must be in the future.");
-return;
-}
-
-const newFood = {
-id: Date.now(),
-name,
-category,
-price,
-originalPrice,
-quantity,
-location,
-deadline: deadlineDate.toLocaleString([], {
-dateStyle: "short",
-timeStyle: "short"
-}),
-emoji: category === "Meals" ? "🍱" :
-category === "Snacks" ? "🥪" : "🧋"
-};
-
-foods.unshift(newFood);
-saveFoods();
-
-activeCategory = "All";
-searchInput.value = "";
-
-document.querySelectorAll(".filter-btn").forEach(button => {
-button.classList.toggle("active", button.dataset.category === "All");
-});
-
-renderFoods();
-
-event.target.reset();
-postForm.classList.remove("open");
-
-message.textContent = "Your demo food listing has been published!";
-document.getElementById("marketplace").scrollIntoView({ behavior: "smooth" });
-});
-
-renderFoods();
-
-const deliveryTasks = [
-{
-id: 1,
-pickup: "Campus Cafeteria",
-destination: "Student Residence A",
-fee: 2.00,
-status: "Available"
-},
-{
-id: 2,
-pickup: "Food Court",
-destination: "Student Residence B",
-fee: 3.00,
-status: "Available"
-},
-{
-id: 3,
-pickup: "Campus Cafe",
-destination: "Academic Block",
-fee: 2.50,
-status: "Available"
-}
-];
-
-let completedDeliveries = 0;
-let totalEarnings = 0;
-
-function renderDeliveries() {
-const grid = document.getElementById("deliveryGrid");
-
-grid.innerHTML = "";
-
-deliveryTasks.forEach(task => {
-const card = document.createElement("article");
-card.className = "food-card";
-
-const info = document.createElement("div");
-info.className = "food-info";
-
-const title = document.createElement("h3");
-title.textContent = "🚲 Campus Delivery #" + task.id;
-
-const pickup = document.createElement("p");
-pickup.textContent = "📦 Pickup: " + task.pickup;
-
-const destination = document.createElement("p");
-destination.textContent = "📍 Deliver to: " + task.destination;
-
-const fee = document.createElement("div");
-fee.className = "price";
-fee.textContent = "RM " + task.fee.toFixed(2);
-
-const status = document.createElement("p");
-status.textContent = "Status: " + task.status;
-
-const button = document.createElement("button");
-button.className = "primary-btn";
-button.style.width = "100%";
-
-if (task.status === "Available") {
-button.textContent = "Accept Delivery";
-
-button.addEventListener("click", () => {
-task.status = "In Progress";
-renderDeliveries();
-});
-
-} else if (task.status === "In Progress") {
-button.textContent = "Mark as Delivered";
-
-button.addEventListener("click", () => {
-task.status = "Completed";
-completedDeliveries++;
-totalEarnings += task.fee;
-
-renderDeliveries();
-});
-
-} else {
-button.textContent = "Delivery Completed";
-button.disabled = true;
-}
-
-info.append(
-title,
-pickup,
-destination,
-fee,
-status,
-button
-);
-
-card.appendChild(info);
-grid.appendChild(card);
-});
-
-const available = deliveryTasks.filter(
-task => task.status === "Available"
-).length;
-
-document.getElementById("availableCount").textContent =
-available + " delivery tasks available";
-
-document.getElementById("totalEarnings").textContent =
-"RM " + totalEarnings.toFixed(2) + " earned";
-
-document.getElementById("completedCount").textContent =
-completedDeliveries + " deliveries completed";
-}
-
-renderDeliveries();
-
 </script>
-
 <script type="module">
   import { initializeApp } from
     "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
@@ -1301,10 +970,8 @@ renderDeliveries();
         logoutButton.textContent = "Log Out";
         logoutButton.type = "button";
 
-        logoutButton.style.cssText =
-          "position:fixed;top:16px;right:16px;z-index:99998;" +
-          "padding:10px 16px;border:0;border-radius:8px;" +
-          "background:#285943;color:white;cursor:pointer;";
+        logoutButton.className = "logout-btn";
+        logoutButton.style.position = "static";
 
         logoutButton.addEventListener("click", async () => {
           try {
@@ -1314,7 +981,7 @@ renderDeliveries();
           }
         });
 
-        document.body.appendChild(logoutButton);
+        document.querySelector(".nav-right").appendChild(logoutButton);
       }
 
       logoutButton.hidden = false;
@@ -1327,7 +994,5 @@ renderDeliveries();
     }
   });
 </script>
-</body>
-</html>
 </body>
 </html>
