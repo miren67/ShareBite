@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShareBite | Campus Food Rescue</title>
+
+<style>
+:root {
+--green: #237a52;
+--dark: #183c2c;
+--cream: #f7f8f1;
+--white: #ffffff;
+--muted: #66736a;
+--border: #e1e8df;
+}
+
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+color: var(--dark);
+background: var(--cream);
+}
+
+header {
+background: var(--white);
+border-bottom: 1px solid var(--border);
+padding: 16px 6%;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 16px;
+flex-wrap: wrap;
+}
+
+.logo {
+color: var(--green);
+font-size: 25px;
+font-weight: 800;
+}
+
+nav {
+display: flex;
+gap: 18px;
+align-items: center;
+flex-wrap: wrap;
+}
+
+nav a {
+text-decoration: none;
+color: var(--dark);
+font-size: 14px;
+font-weight: 600;
+}
+
+button {
+cursor: pointer;
+font: inherit;
+}
+
+.primary-btn {
+background: var(--green);
+color: white;
+border: none;
+border-radius: 9px;
+padding: 11px 16px;
+font-weight: 700;
+}
+
+.primary-btn:hover {
+background: var(--dark);
+}
+
+.hero {
+padding: 54px 6%;
+background: #e7f1e6;
+display: grid;
+grid-template-columns: 1.4fr 1fr;
+gap: 30px;
+align-items: center;
+}
+
+.hero h1 {
+font-size: clamp(32px, 5vw, 52px);
+line-height: 1.1;
+margin: 12px 0;
+}
+
+.hero p {
+color: #4f6556;
+line-height: 1.7;
+max-width: 520px;
+}
+
+.eyebrow {
+color: var(--green);
+text-transform: uppercase;
+font-size: 12px;
+letter-spacing: 1.5px;
+font-weight: 800;
+}
+
+.hero-visual {
+background: white;
+border-radius: 22px;
+padding: 30px;
+text-align: center;
+box-shadow: 0 8px 30px #183c2c10;
+}
+
+.hero-visual .food-emoji {
+font-size: 90px;
+}
+
+.hero-visual h3 {
+margin-bottom: 6px;
+}
+
+.hero-visual p {
+margin: 0 auto;
+}
+
+main {
+padding: 35px 6% 60px;
+}
+
+.section-heading {
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+margin-bottom: 20px;
+}
+
+.section-heading h2 {
+margin: 0;
+font-size: 27px;
+}
+
+.search-bar {
+width: 100%;
+max-width: 360px;
+padding: 12px;
+border: 1px solid var(--border);
+border-radius: 9px;
+background: white;
+font: inherit;
+}
+
+.filters {
+display: flex;
+gap: 9px;
+flex-wrap: wrap;
+margin-bottom: 22px;
+}
+
+.filter-btn {
+border: 1px solid var(--border);
+background: white;
+padding: 9px 15px;
+border-radius: 30px;
+color: var(--dark);
+}
+
+.filter-btn.active {
+background: var(--green);
+color: white;
+border-color: var(--green);
+}
+
+.food-grid {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 20px;
+}
+
+.food-card {
+background: white;
+border: 1px solid var(--border);
+border-radius: 15px;
+overflow: hidden;
+}
+
+.food-picture {
+min-height: 145px;
+background: #eaf1e8;
+display: grid;
+place-items: center;
+font-size: 64px;
+position: relative;
+}
+
+.discount-tag {
+position: absolute;
+top: 12px;
+left: 12px;
+background: #fff0cf;
+color: #805517;
+border-radius: 6px;
+padding: 6px 9px;
+font-size: 12px;
+font-weight: 800;
+}
+
+.food-info {
+padding: 17px;
+}
+
+.food-info h3 {
+margin: 0 0 8px;
+}
+
+.food-info p {
+color: var(--muted);
+font-size: 13px;
+line-height: 1.5;
+margin: 6px 0;
+}
+
+.price-row {
+display: flex;
+align-items: center;
+gap: 9px;
+margin: 13px 0;
+}
+
+.price {
+color: var(--green);
+font-size: 23px;
+font-weight: 800;
+}
+
+.old-price {
+color: #89928b;
+text-decoration: line-through;
+font-size: 13px;
+}
+
+.food-info .primary-btn {
+width: 100%;
+margin-top: 8px;
+}
+
+.empty-state {
+padding: 35px;
+text-align: center;
+color: var(--muted);
+grid-column: 1 / -1;
+}
+
+.feature-strip {
+margin-top: 40px;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 16px;
+}
+
+.feature {
+background: white;
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 20px;
+}
+
+.feature .icon {
+font-size: 27px;
+}
+
+.feature p {
+font-size: 13px;
+line-height: 1.6;
+color: var(--muted);
+}
+
+.form-panel {
+display: none;
+margin-top: 35px;
+padding: 24px;
+background: white;
+border: 1px solid var(--border);
+border-radius: 15px;
+max-width: 650px;
+}
+
+.form-panel.open {
+display: block;
+}
+
+.form-panel h2 {
+margin-top: 0;
+}
+
+.form-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+
+.form-field {
+display: flex;
+flex-direction: column;
+gap: 7px;
+}
+
+.form-field.full {
+grid-column: 1 / -1;
+}
+
+.form-field label {
+font-size: 13px;
+font-weight: 700;
+}
+
+.form-field input,
+.form-field select {
+width: 100%;
+padding: 11px;
+border: 1px solid var(--border);
+border-radius: 8px;
+font: inherit;
+}
+
+.form-actions {
+display: flex;
+gap: 10px;
+margin-top: 18px;
+}
+
+.secondary-btn {
+background: white;
+border: 1px solid var(--border);
+padding: 10px 15px;
+border-radius: 9px;
+}
+
+footer {
+padding: 25px 6%;
+background: var(--dark);
+color: white;
+text-align: center;
+font-size: 13px;
+}
+
+#message {
+margin: 15px 0;
+font-size: 14px;
+font-weight: 700;
+}
+
+@media(max-width: 850px) {
+.hero {
+grid-template-columns: 1fr;
+}
+
+.food-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+@media(max-width: 550px) {
+header {
+padding: 15px 5%;
+}
+
+nav {
+gap: 12px;
+}
+
+.hero, main {
+padding-left: 5%;
+padding-right: 5%;
+}
+
+.food-grid,
+.feature-strip,
+.form-grid {
+grid-template-columns: 1fr;
+}
+
+.form-field.full {
+grid-column: auto;
+}
+
+.search-bar {
+max-width: none;
+}
+}
+</style>
+</head>
+
+<body>
+<header>
+<div class="logo">🥗 ShareBite</div>
+
+<nav>
+<a href="#marketplace">Explore Food</a>
+<a href="#how-it-works">How It Works</a>
+<button class="primary-btn" id="postTopBtn">+ Post Food</button>
+</nav>
+</header>
+
+<section class="hero">
+<div>
+<span class="eyebrow">Good food. Less waste.</span>
+<h1>Save food.<br>Save money.<br>Earn together.</h1>
+<p>
+Discover affordable meals around campus, rescue surplus food,
+and earn extra income by delivering orders to fellow students.
+</p>
+<button class="primary-btn" id="exploreBtn">Explore Available Food →</button>
+</div>
+
+<div class="hero-visual">
+<div class="food-emoji">🍱</div>
+<h3>Good food deserves a second chance.</h3>
+<p>Affordable meals and new opportunities, all in one place.</p>
+</div>
+</section>
+
+<main>
+<section id="marketplace">
+<div class="section-heading">
+<h2>Available Near You</h2>
+<input
+id="searchInput"
+class="search-bar"
+type="search"
+placeholder="Search meals or locations..."
+aria-label="Search meals or locations"
+>
+</div>
+
+Niswah:
+<div class="filters" id="filters">
+<button class="filter-btn active" data-category="All">All Food</button>
+<button class="filter-btn" data-category="Meals">Meals</button>
+<button class="filter-btn" data-category="Snacks">Snacks</button>
+<button class="filter-btn" data-category="Drinks">Drinks</button>
+</div>
+
+<div id="foodGrid" class="food-grid"></div>
+<p id="message" role="status"></p>
+</section>
+
+<section class="feature-strip" id="how-it-works">
+<div class="feature">
+<div class="icon">🥡</div>
+<h3>Share Surplus Food</h3>
+<p>Post extra food or discounted meals for other students to discover.</p>
+</div>
+
+<div class="feature">
+<div class="icon">💚</div>
+<h3>Eat for Less</h3>
+<p>Find affordable food and choose convenient campus collection points.</p>
+</div>
+
+<div class="feature">
+<div class="icon">🚲</div>
+<h3>Earn by Delivering</h3>
+<p>Take delivery requests and earn a fee for completed deliveries.</p>
+</div>
+</section>
+
+<section id="postForm" class="form-panel">
+<h2>Post a Food Listing</h2>
+<p style="color:#66736a;font-size:14px">
+Help another student find an affordable meal.
+</p>
+
+<form id="foodForm">
+<div class="form-grid">
+<div class="form-field">
+<label for="foodName">Food name</label>
+<input id="foodName" required maxlength="60" placeholder="e.g. Chicken Rice">
+</div>
+
+<div class="form-field">
+<label for="category">Category</label>
+<select id="category" required>
+<option value="Meals">Meals</option>
+<option value="Snacks">Snacks</option>
+<option value="Drinks">Drinks</option>
+</select>
+</div>
+
+<div class="form-field">
+<label for="foodPrice">Discounted price (RM)</label>
+<input id="foodPrice" type="number" required min="0.50" max="500" step="0.10">
+</div>
+
+<div class="form-field">
+<label for="originalPrice">Original price (RM)</label>
+<input id="originalPrice" type="number" required min="0.50" max="500" step="0.10">
+</div>
+
+<div class="form-field">
+<label for="quantity">Available portions</label>
+<input id="quantity" type="number" required min="1" max="100" step="1" value="1">
+</div>
+
+<div class="form-field">
+<label for="location">Collection location</label>
+<input id="location" required maxlength="100" placeholder="e.g. Campus Cafeteria">
+</div>
+
+<div class="form-field full">
+<label for="deadline">Collection deadline</label>
+<input id="deadline" type="datetime-local" required>
+</div>
+</div>
+
+<div class="form-actions">
+<button class="primary-btn" type="submit">Publish Listing</button>
+<button class="secondary-btn" type="button" id="cancelBtn">Cancel</button>
+</div>
+</form>
+</section>
+</main>
+
+<footer>
+<strong>ShareBite</strong> · Good food, less waste, stronger campus communities.
+<br><br>
+Student hackathon prototype · Sample listings are for demonstration.
+</footer>
+
+<script>
+const starterFoods = [
+{
+id: 1,
+name: "Nasi Lemak",
+category: "Meals",
+price: 4,
+originalPrice: 7,
+quantity: 3,
+location: "Campus Cafeteria",
+deadline: "8:00PM",
+emoji: "🍛"
+},
+{
+id: 2,
+name: "Chicken Rice",
+category: "Meals",
+price: 5,
+originalPrice: 8,
+quantity: 2,
+location: "Food Court",
+deadline: "7:30PM",
+emoji: "🍱"
+},
+{
+id: 3,
+name: "Fresh Sandwich",
+category: "Snacks",
+price: 3,
+originalPrice: 5,
+quantity: 4,
+location: "Student Hub",
+deadline: "6:30 PM",
+emoji: "🥪"
+},
+{
+id: 4,
+name: "Iced Milk Tea",
+category: "Drinks",
+price: 2,
+originalPrice: 4,
+quantity: 5,
+location: "Campus Cafe",
+deadline: "8:00 PM",
+emoji: "🧋"
+},
+{
+id: 5,
+name: "Curry Puff Set",
+category: "Snacks",
+price: 2.5,
+originalPrice: 4,
+quantity: 6,
+location: "Food Court",
+deadline: "7:00 PM",
+emoji: "🥟"
+},
+{
+id: 6,
+name: "Fried Rice",
+category: "Meals",
+price: 4.5,
+originalPrice: 7,
+quantity: 2,
+location: "Campus Cafeteria",
+deadline: "8:30 PM",
+emoji: "🍚"
+}
+];
+
+const STORAGE_KEY = "sharebite_demo_foods";
+const ORDERS_KEY = "sharebite_demo_orders";
+
+let foods;
+
+try {
+const saved = localStorage.getItem(STORAGE_KEY);
+foods = saved ? JSON.parse(saved) : starterFoods;
+if (!Array.isArray(foods)) foods = starterFoods;
+} catch {
+foods = starterFoods;
+}
+
+let activeCategory = "All";
+
+const foodGrid = document.getElementById("foodGrid");
+const searchInput = document.getElementById("searchInput");
+const message = document.getElementById("message");
+const postForm = document.getElementById("postForm");
+
+function saveFoods() {
+try {
+localStorage.setItem(STORAGE_KEY, JSON.stringify(foods));
+} catch {
+message.textContent = "Changes may not persist in this browser.";
+}
+}
+
+function money(amount) {
+return Number(amount).toFixed(2);
+}
+
+function renderFoods() {
+const query = searchInput.value.trim().toLowerCase();
+
+const filtered = foods.filter(food => {
+const matchesCategory =
+activeCategory === "All" 
+food.category === activeCategory;
+
+const matchesSearch =
+food.name.toLowerCase().includes(query) 
+food.location.toLowerCase().includes(query);
+
+return matchesCategory && matchesSearch;
+});
+
+foodGrid.innerHTML = "";
+
+if (filtered.length === 0) {
+foodGrid.innerHTML = `
+<div class="empty-state">
+<h3>No food found</h3>
+<p>Try another search or post a new food listing.</p>
+</div>`;
+return;
+}
+
+filtered.forEach(food => {
+const discount = food.originalPrice > 0
+? Math.round((1 - food.price / food.originalPrice) * 100)
+: 0;
+
+const card = document.createElement("article");
+card.className = "food-card";
+/*const picture = document.createElement("div");
+picture.className = "food-picture";
+picture.innerHTML = `#
+<span>${food.emoji "🍽"}</span>
+<span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>";*/
+
+const picture = document.createElement("div");
+picture.className = "food-picture";
+
+picture.innerHTML = `
+<span>${food.emoji || "🍽"}</span>
+<span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>`;
+
+const info = document.createElement("div");
+info.className = "food-info";
+
+const title = document.createElement("h3");
+title.textContent = food.name;
+
+const location = document.createElement("p");
+location.textContent = "📍" + food.location;
+
+const deadline = document.createElement("p");
+deadline.textContent = "🕒Collect by " + food.deadline;
+
+const quantity = document.createElement("p");
+quantity.textContent = food.quantity + " portion(s) available";
+
+const priceRow = document.createElement("div");
+priceRow.className = "price-row";
+priceRow.innerHTML = `
+<span class="price">RM ${money(food.price)}</span>
+<span class="old-price">RM ${money(food.originalPrice)}</span>`;
+
+const orderButton = document.createElement("button");
+orderButton.className = "primary-btn";
+orderButton.style.width = "100%";
+orderButton.textContent = "Reserve Food";
+orderButton.disabled = food.quantity <= 0;
+
+if (food.quantity <= 0) {
+orderButton.textContent = "Sold Out";
+}
+
+orderButton.addEventListener("click", () => reserveFood(food.id));
+
+info.append(title, location, deadline, quantity, priceRow, orderButton);
+card.append(picture, info);
+foodGrid.appendChild(card);
+});
+}
+
+function reserveFood(id) {
+const food = foods.find(item => item.id === id);
+if (!food.quantity <= 0) return;
+
+const wantsDelivery = confirm(
+"Reserve " + food.name+ " for RM " + money(food.price) +
+"?\n\nChoose OK for delivery, or Cancel for self-collection."
+);
+
+const orders = (() => {
+try {
+return JSON.parse(localStorage.getItem(ORDERS_KEY)||"[]");
+} catch {
+return [];
+}
+})();
+
+const order = {
+id: Date.now(),
+foodId: food.id,
+foodName: food.name,
+price: food.price,
+location: food.location,
+deliveryRequested: wantsDelivery,
+status: "Pending"
+};
+
+orders.push(order);
+food.quantity -= 1;
+
+try {
+localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+saveFoods();
+message.textContent = wantsDelivery
+? "Demo order created! Delivery requested. Order status: Pending."
+: "Demo reservation created! Please collect from " + food.location + ".";
+} catch {
+food.quantity += 1;
+message.textContent = "Unable to save this demo order in your browser.";
+}
+
+renderFoods();
+}
+
+function openPostForm() {
+postForm.classList.add("open");
+postForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+document.getElementById("postTopBtn").addEventListener("click", openPostForm);
+
+document.getElementById("exploreBtn").addEventListener("click", () => {
+document.getElementById("marketplace").scrollIntoView({ behavior: "smooth" });
+});
+
+document.getElementById("cancelBtn").addEventListener("click", () => {
+postForm.classList.remove("open");
+document.getElementById("foodForm").reset();
+});
+
+searchInput.addEventListener("input", renderFoods);
+
+document.getElementById("filters").addEventListener("click", event => {
+const button = event.target.closest("[data-category]");
+if (!button) return;
+
+activeCategory = button.dataset.category;
+
+document.querySelectorAll(".filter-btn").forEach(item => {
+item.classList.toggle("active", item === button);
+});
+
+renderFoods();
+});
+
+document.getElementById("foodForm").addEventListener("submit", event => {
+event.preventDefault();
+
+const name = document.getElementById("foodName").value.trim();
+const category = document.getElementById("category").value;
+const price = Number(document.getElementById("foodPrice").value);
+const originalPrice = Number(document.getElementById("originalPrice").value);
+const quantity = Number(document.getElementById("quantity").value);
+const location = document.getElementById("location").value.trim();
+const deadlineValue = document.getElementById("deadline").value;
+const deadlineDate = new Date(deadlineValue);
+
+if (
+!name || !location || !deadlineValue ||
+!Number.isFinite(price) || !Number.isFinite(originalPrice) ||
+!Number.isInteger(quantity) || quantity < 1 ||
+price <= 0 || originalPrice <= 0 ||
+price > originalPrice ||
+Number.isNaN(deadlineDate.getTime()) ||
+deadlineDate <= new Date()
+) {
+
+alert("Please check your details. The discounted price must not exceed the original price, and the collection deadline must be in the future.");
+return;
+}
+
+const newFood = {
+id: Date.now(),
+name,
+category,
+price,
+originalPrice,
+quantity,
+location,
+deadline: deadlineDate.toLocaleString([], {
+dateStyle: "short",
+timeStyle: "short"
+}),
+emoji: category === "Meals" ? "🍱" :
+category === "Snacks" ? "🥪" : "🧋"
+};
+
+foods.unshift(newFood);
+saveFoods();
+
+activeCategory = "All";
+searchInput.value = "";
+
+document.querySelectorAll(".filter-btn").forEach(button => {
+button.classList.toggle("active", button.dataset.category === "All");
+});
+
+renderFoods();
+
+event.target.reset();
+postForm.classList.remove("open");
+
+message.textContent = "Your demo food listing has been published!";
+document.getElementById("marketplace").scrollIntoView({ behavior: "smooth" });
+});
+
+renderFoods();
+</script>
+</body>
+</html>
