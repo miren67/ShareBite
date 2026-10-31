@@ -489,6 +489,140 @@ max-width: none;
   font-weight: 700;
   cursor: pointer;
 }
+/* Fix logout button position 
+.logout-btn {
+position: static !important;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+margin-left: 15px;
+padding: 14px 24px;
+background-color: #245b46;
+color: white;
+border: none;
+border-radius: 16px;
+font-size: 18px;
+cursor: pointer;
+white-space: nowrap;
+vertical-align: middle;
+}*/
+
+/* Navigation bar */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: white;
+    position: relative;
+    z-index: 1000;
+}
+
+.brand {
+    color: #245b46;
+    font-size: 28px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
+/* Three-line button */
+.menu-toggle {
+    background: #245b46;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.menu-toggle:hover {
+    background: #194735;
+}
+
+/* Dropdown menu - hidden by default */
+.nav-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 210px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Show menu when clicked */
+.nav-menu.show {
+    display: flex;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: #245b46;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 12px 14px;
+    border-radius: 8px;
+}
+
+.nav-menu a:hover {
+    background: #e8f2e8;
+}
+
+/* Logout button */
+.logout-btn {
+    position: static;
+    background: #245b46;
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 22px;
+    font-size: 18px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.logout-btn:hover {
+    background: #194735;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .navbar {
+        padding: 14px 16px;
+    }
+
+    .brand {
+        font-size: 23px;
+    }
+
+    .nav-right {
+        gap: 8px;
+    }
+
+    .logout-btn {
+        padding: 10px 14px;
+        font-size: 15px;
+    }
+
+    .menu-toggle {
+        padding: 9px 12px;
+        font-size: 24px;
+    }
+}
+
 </style>
 </head>
 
@@ -551,10 +685,27 @@ Log In
 <header>
 <div class="logo">🥗 ShareBite</div>
 
-<nav>
-<a href="#marketplace">Explore Food</a>
-<a href="#how-it-works">How It Works</a>
-<button class="primary-btn" id="postTopBtn">+ Post Food</button>
+<nav class="navbar">
+<a href="index.html" class="brand">ShareBite</a>
+
+<div class="nav-right">
+<!-- Three-line menu button -->
+<button class="menu-toggle" id="menuToggle"
+aria-label="Open navigation menu"
+aria-expanded="false">
+☰
+</button>
+
+<!-- Menu items that appear when clicked 
+<div class="nav-menu" id="navMenu">
+<a href="index.html">Home</a>
+<a href="index.html#explore">Explore Food</a>
+<a href="post-food.html">Post Food</a>
+<a href="deliveries.html">Deliveries</a>
+</div>-->
+
+<!-- Keep logout visible -->
+</div>
 </nav>
 </header>
 
@@ -1290,6 +1441,23 @@ renderDeliveries();
     }
   });
 
+  <div class="nav-right">
+    <!-- Hamburger menu -->
+    <button class="menu-toggle" id="menuToggle"
+            aria-label="Open navigation menu"
+            aria-expanded="false">
+        ☰
+    </button>
+
+    <!-- Dropdown navigation -->
+    <div class="nav-menu" id="navMenu">
+        <a href="index.html">Home</a>
+        <a href="index.html#explore">Explore Food</a>
+        <a href="post-food.html">Post Food</a>
+        <a href="deliveries.html">Deliveries</a>
+    </div>
+
+
   // Keep the login screen visible until Firebase confirms sign-in.
   let logoutButton = null;
 
@@ -1326,6 +1494,39 @@ renderDeliveries();
       }
     }
   });
+
+  </div>
+const menuToggle = document.getElementById("menuToggle");
+const navMenu = document.getElementById("navMenu");
+
+menuToggle.addEventListener("click", function () {
+    navMenu.classList.toggle("show");
+
+    const isOpen = navMenu.classList.contains("show");
+    menuToggle.setAttribute("aria-expanded", isOpen);
+    menuToggle.setAttribute(
+        "aria-label",
+        isOpen ? "Close navigation menu" : "Open navigation menu"
+    );
+});
+
+// Close the menu after selecting a link
+navMenu.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", function () {
+        navMenu.classList.remove("show");
+        menuToggle.setAttribute("aria-expanded", "false");
+    });
+});
+
+// Close the menu when clicking outside it
+document.addEventListener("click", function (event) {
+    if (!menuToggle.contains(event.target) &&
+        !navMenu.contains(event.target)) {
+        navMenu.classList.remove("show");
+        menuToggle.setAttribute("aria-expanded", "false");
+    }
+});
+
 </script>
 </body>
 </html>
