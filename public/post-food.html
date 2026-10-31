@@ -405,7 +405,7 @@ max-width: none;
 }
 
 .auth-screen[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .auth-card {
@@ -581,6 +581,11 @@ vertical-align: middle;
     background: #e8f2e8;
 }
 
+.nav-menu a.active {
+    background: #245b46;
+    color: white;
+}
+
 /* Logout button */
 .logout-btn {
     position: static;
@@ -623,12 +628,29 @@ vertical-align: middle;
     }
 }
 
+#foodImage {
+    background: white;
+    cursor: pointer;
+}
 
+#imagePreview {
+    width: 100%;
+    max-width: 300px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-top: 12px;
+    border: 1px solid var(--border);
+}
+
+#imagePreview[hidden] {
+    display: none;
+}
 </style>
 </head>
 <body>
 
-<section id="authScreen" class="auth-screen">
+<section id="authScreen" class="auth-screen" hidden>
 <div class="auth-card">
 <div class="auth-logo">🥗</div>
 <h1>ShareBite</h1>
@@ -684,9 +706,9 @@ Log In
 <header>
 <div class="logo">🥗 ShareBite</div>
 <nav class="navbar">
-<a href="homepage.html" class="brand">ShareBite</a>
+<!-- <a href="homepage.html" class="brand">ShareBite</a> -->    
 <div class="nav-right">
-<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">Browse Here!</button>
 <div class="nav-menu" id="navMenu">
 <a href="homepage.html">Home</a>
 <a href="explore.html">Explore Food</a>
@@ -742,6 +764,14 @@ Help another student find an affordable meal.
 <label for="deadline">Collection deadline</label>
 <input id="deadline" type="datetime-local" required>
 </div>
+<div class="form-field full">
+    <label for="foodImage">Upload Food Picture</label>
+    <input
+        type="file"
+        id="foodImage"
+        accept="image/*"
+    >
+</div>
 </div>
 
 <div class="form-actions">
@@ -763,6 +793,13 @@ menuToggle.addEventListener('click', () => {
 navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
 }));
+const currentPage = window.location.pathname.split('/').pop() || 'homepage.html';
+
+navMenu.querySelectorAll('a').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
 document.addEventListener('click', event => {
   if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
     navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
@@ -815,6 +852,7 @@ location: "Campus Cafe",
 deadline: "8:00 PM",
 emoji: "🧋"
 },
+
 {
 id: 5,
 name: "Curry Puff Set",
@@ -838,7 +876,38 @@ deadline: "8:30 PM",
 emoji: "🍚"
 }
 ];
+const foodImage = document.getElementById("foodImage");
+const imagePreview = document.getElementById("imagePreview");
+
+foodImage.addEventListener("change", () => {
+  const file = foodImage.files[0];
+
+  if (!file) {
+    imagePreview.hidden = true;
+    imagePreview.removeAttribute("src");
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    alert("Please select an image file.");
+    foodImage.value = "";
+    imagePreview.hidden = true;
+    return;
+  }
+
+  imagePreview.src = URL.createObjectURL(file);
+  imagePreview.hidden = false;
+
+  imagePreview.onload = () => {
+    URL.revokeObjectURL(imagePreview.src);
+  };
+});
 const STORAGE_KEY = "sharebite_demo_foods";
+let currentUserId = null;
+
+window.addEventListener("sharebite-auth", (event) => {
+    currentUserId = event.detail.uid;
+});
 let foods; try { foods = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || starterFoods; if (!Array.isArray(foods)) foods = starterFoods; } catch { foods = starterFoods; }
 const form = document.getElementById("foodForm");
 form.addEventListener("submit", event => {
@@ -854,7 +923,11 @@ form.addEventListener("submit", event => {
   if (!name || !location || !deadlineValue || !Number.isFinite(price) || !Number.isFinite(originalPrice) || !Number.isInteger(quantity) || quantity < 1 || price <= 0 || originalPrice <= 0 || price > originalPrice || Number.isNaN(deadlineDate.getTime()) || deadlineDate <= new Date()) {
     alert("Please check your details. The discounted price must not exceed the original price, and the collection deadline must be in the future."); return;
   }
-  foods.unshift({ id: Date.now(), name, category, price, originalPrice, quantity, location, deadline: deadlineDate.toLocaleString([], { dateStyle: "short", timeStyle: "short" }), emoji: category === "Meals" ? "🍱" : category === "Snacks" ? "🥪" : "🧋" });
+  if (!currentUserId) {
+    alert("Please log in before posting food.");
+    return;
+}
+  foods.unshift({ id: Date.now(), name, category, price, originalPrice, quantity, location, deadline: deadlineDate.toLocaleString([], { dateStyle: "short", timeStyle: "short" }), emoji: category === "Meals" ? "🍱" : category === "Snacks" ? "🥪" : "🧋" , ownerId: currentUserId });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(foods));
   form.reset(); document.getElementById("postMessage").textContent = "Your demo food listing has been published! View it on Explore Food.";
 });
@@ -990,6 +1063,9 @@ document.getElementById("cancelBtn").addEventListener("click", () => { form.rese
   let logoutButton = null;
 
   onAuthStateChanged(auth, (user) => {
+    window.dispatchEvent(new CustomEvent("sharebite-auth", {
+    detail: { uid: user ? user.uid : null }
+}));
     if (user) {
       authScreen.hidden = true;
       if (!logoutButton) {

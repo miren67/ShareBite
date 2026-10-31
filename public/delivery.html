@@ -405,7 +405,7 @@ max-width: none;
 }
 
 .auth-screen[hidden] {
-  display: none;
+  display: none !important;
 }
 
 .auth-card {
@@ -581,6 +581,11 @@ vertical-align: middle;
     background: #e8f2e8;
 }
 
+.nav-menu a.active {
+    background: #245b46;
+    color: white;
+}
+
 /* Logout button */
 .logout-btn {
     position: static;
@@ -628,7 +633,7 @@ vertical-align: middle;
 </head>
 <body>
 
-<section id="authScreen" class="auth-screen">
+<section id="authScreen" class="auth-screen" hidden>
 <div class="auth-card">
 <div class="auth-logo">🥗</div>
 <h1>ShareBite</h1>
@@ -684,9 +689,9 @@ Log In
 <header>
 <div class="logo">🥗 ShareBite</div>
 <nav class="navbar">
-<a href="index.html" class="brand">ShareBite</a>
+<!-- <a href="index.html" class="brand">ShareBite</a> -->
 <div class="nav-right">
-<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">☰</button>
+<button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">Browse Here!</button>
 <div class="nav-menu" id="navMenu">
 <a href="homepage.html">Home</a>
 <a href="explore.html">Explore Food</a>
@@ -772,6 +777,13 @@ menuToggle.addEventListener('click', () => {
 navMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
   navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
 }));
+const currentPage = window.location.pathname.split('/').pop() || 'homepage.html';
+
+navMenu.querySelectorAll('a').forEach(link => {
+    if (link.getAttribute('href') === currentPage) {
+        link.classList.add('active');
+    }
+});
 document.addEventListener('click', event => {
   if (!menuToggle.contains(event.target) && !navMenu.contains(event.target)) {
     navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
