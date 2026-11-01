@@ -781,7 +781,7 @@ Log In
 
 <div class="form-field">
 <label for="foodPrice">Discounted price (RM)</label>
-<input id="foodPrice" type="number" required min="0.50" max="500" step="0.10">
+<input id="foodPrice" type="number" required min="0.0" max="500" step="0.10">
 </div>
 
 <div class="form-field">
@@ -810,6 +810,8 @@ Log In
         id="foodImage"
         accept="image/*"
     >
+     <!-- Preview of uploaded food picture -->
+    <img id="imagePreview" alt="Food image preview" hidden>
 </div>
 </div>
 
@@ -949,7 +951,7 @@ window.addEventListener("sharebite-auth", (event) => {
 });
 let foods; try { foods = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null") || starterFoods; if (!Array.isArray(foods)) foods = starterFoods; } catch { foods = starterFoods; }
 const form = document.getElementById("foodForm");
-form.addEventListener("submit", event => {
+form.addEventListener("submit", async event => {
   event.preventDefault();
   const name = document.getElementById("foodName").value.trim();
   const category = document.getElementById("category").value;
@@ -959,14 +961,33 @@ form.addEventListener("submit", event => {
   const location = document.getElementById("location").value.trim();
   const deadlineValue = document.getElementById("deadline").value;
   const deadlineDate = new Date(deadlineValue);
-  if (!name || !location || !deadlineValue || !Number.isFinite(price) || !Number.isFinite(originalPrice) || !Number.isInteger(quantity) || quantity < 1 || price <= 0 || originalPrice <= 0 || price > originalPrice || Number.isNaN(deadlineDate.getTime()) || deadlineDate <= new Date()) {
-    alert("Please check your details. The discounted price must not exceed the original price, and the collection deadline must be in the future."); return;
+  if (!name || !location || !deadlineValue || !Number.isFinite(price) || !Number.isFinite(originalPrice) || !Number.isInteger(quantity) || quantity < 1 || price < 0 || originalPrice <= 0 || price > originalPrice || Number.isNaN(deadlineDate.getTime()) || deadlineDate <= new Date()) {
+    alert("Please check your details. The price cannot be negative or exceed the original price, and the collection deadline must be in the future."); return;
   }
   if (!currentUserId) {
     alert("Please log in before posting food.");
     return;
 }
-  foods.unshift({ id: Date.now(), name, category, price, originalPrice, quantity, location, deadline: deadlineDate.toLocaleString([], { dateStyle: "short", timeStyle: "short" }), emoji: category === "Meals" ? "🍱" : category === "Snacks" ? "🥪" : "🧋" , ownerId: currentUserId });
+let imageUrl = "";
+
+const selectedImage = document.getElementById("foodImage").files[0];
+
+if (selectedImage) {
+    if (selectedImage.size > 500 * 1024) {
+        alert("Please upload an image smaller than 500 KB.");
+        return;
+    }
+
+    imageUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("Unable to read image"));
+
+        reader.readAsDataURL(selectedImage);
+    });
+}
+  foods.unshift({ id: Date.now(), name, category, price, originalPrice, quantity, location, deadline: deadlineDate.toLocaleString([], { dateStyle: "short", timeStyle: "short" }), emoji: category === "Meals" ? "🍱" : category === "Snacks" ? "🥪" : "🧋" ,imageUrl, ownerId: currentUserId });
   localStorage.setItem(STORAGE_KEY, JSON.stringify(foods));
   form.reset(); document.getElementById("postMessage").textContent = "Your demo food listing has been published! View it on Explore Food.";
 });
@@ -1148,6 +1169,12 @@ logoutButton.addEventListener("click", async () => {
 });
 
 onAuthStateChanged(auth, (user) => {
+
+  window.dispatchEvent(new CustomEvent("sharebite-auth", {
+        detail: {
+            uid: user ? user.uid : null
+        }
+    }));
     if (user) {
         authScreen.hidden = true;
     } else {

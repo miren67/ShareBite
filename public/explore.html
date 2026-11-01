@@ -194,6 +194,18 @@ place-items: center;
 font-size: 64px;
 position: relative;
 }
+/* Uploaded food photos */
+.food-photo {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.food-picture:has(.food-photo) {
+    display: block;
+    min-height: 200px;
+}
 
 .discount-tag {
 position: absolute;
@@ -861,7 +873,35 @@ function renderFoods() {
     const discount = food.originalPrice > 0 ? Math.round((1 - food.price / food.originalPrice) * 100) : 0;
     const card = document.createElement("article"); card.className = "food-card";
     const picture = document.createElement("div"); picture.className = "food-picture";
-    picture.innerHTML = `<span>${food.emoji || "🍽"}</span><span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>`;
+    /*picture.innerHTML = `<span>${food.emoji || "🍽"}</span><span class="discount-tag">${discount > 0 ? discount + "% OFF" : "Available"}</span>`;
+    */
+   if (food.imageUrl) {
+    const img = document.createElement("img");
+    img.src = food.imageUrl;
+    img.alt = food.name;
+    img.className = "food-photo";
+
+    img.onerror = () => {
+        img.remove();
+        const fallback = document.createElement("span");
+        fallback.textContent = food.emoji || "🍽";
+        picture.prepend(fallback);
+    };
+
+    picture.appendChild(img);
+} else {
+    const emoji = document.createElement("span");
+    emoji.textContent = food.emoji || "🍽";
+    picture.appendChild(emoji);
+}
+
+const discountTag = document.createElement("span");
+discountTag.className = "discount-tag";
+discountTag.textContent = discount > 0
+    ? discount + "% OFF"
+    : "Available";
+
+picture.appendChild(discountTag);
     const info = document.createElement("div"); info.className = "food-info";
     const title = document.createElement("h3"); title.textContent = food.name;
     const location = document.createElement("p"); location.textContent = "📍 " + food.location;
