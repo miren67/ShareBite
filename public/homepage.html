@@ -893,9 +893,21 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--orange); outlin
   padding: 10px 14px;
   cursor: pointer;
 }
+/* Prevent homepage flashing before Firebase authentication finishes */
+body.auth-loading > :not(#authScreen) {
+    visibility: hidden !important;
+}
+
+body.auth-loading #authScreen {
+    display: flex !important;
+}
+
+body.auth-loading #authScreen[hidden] {
+    display: none !important;
+}
 </style>
 </head>
-<body>
+<body class="auth-loading">
 
 <section id="authScreen" class="auth-screen" hidden>
 <div class="auth-card">
@@ -1359,6 +1371,7 @@ onAuthStateChanged(auth, (user) => {
     } else {
         authScreen.hidden = false;
     }
+    document.body.classList.remove("auth-loading");
 });
 </script>
 <!-- SHAREBITE AI CHATBOT -->
