@@ -674,6 +674,137 @@ vertical-align: middle;
     height: 24px;
     display: block;
 }
+
+/* ShareBite information carousel */
+.info-carousel-section { padding: 48px 6%; background: #fff; }
+.info-carousel { position: relative; max-width: 1120px; margin: 0 auto; overflow: hidden; border-radius: 24px; background: #e7f1e6; border: 1px solid var(--border); }
+.carousel-track { display: flex; transition: transform .3s ease; will-change: transform; }
+.carousel-slide { flex: 0 0 100%; box-sizing: border-box; min-height: 330px; padding: clamp(28px, 5vw, 56px); display: flex; flex-direction: column; justify-content: center; }
+.carousel-slide:nth-child(even) { background: var(--cream); }
+.carousel-kicker { color: var(--green); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.6px; margin-bottom: 12px; }
+.carousel-slide h2 { font-size: clamp(26px, 3vw, 38px); line-height: 1.2; margin: 0 0 14px; max-width: 780px; }
+.carousel-slide p { max-width: 800px; line-height: 1.8; color: var(--muted); margin: 0 0 14px; }
+.carousel-icon { font-size: 38px; margin-bottom: 12px; }
+.carousel-points { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-top: 12px; }
+.carousel-point { background: #ffffffd9; border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.carousel-point strong { display:block; margin-bottom: 6px; }
+.carousel-point span { color: var(--muted); font-size: 14px; line-height: 1.6; }
+.carousel-controls { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px; background: #fff; }
+.carousel-arrow { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: white; color: var(--dark); font-size: 20px; cursor: pointer; }
+.carousel-arrow:hover { background: var(--green); color: white; }
+.carousel-dots { display:flex; align-items:center; justify-content:center; gap:8px; }
+.carousel-dot { width: 9px; height: 9px; border: 0; border-radius: 50%; padding: 0; background: #b8c8bb; cursor:pointer; }
+.carousel-dot.active { width: 24px; border-radius: 8px; background: var(--green); }
+.carousel-status { font-size: 12px; color: var(--muted); min-width: 38px; text-align:center; }
+@media(max-width:750px) { .info-carousel-section { padding: 30px 5%; } .carousel-slide { min-height: 400px; } .carousel-points { grid-template-columns: 1fr; } .carousel-controls { gap: 12px; } }
+
+/* SHAREBITE AI CHATBOT */
+#aiChatbot {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  font-family: Arial, sans-serif;
+}
+
+#aiChatToggle {
+  width: 62px;
+  height: 62px;
+  border: none;
+  border-radius: 50%;
+  background: #245b46;
+  color: white;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 5px 20px #0003;
+}
+
+#aiChatWindow {
+  width: min(360px, calc(100vw - 32px));
+  height: min(480px, calc(100dvh - 110px));
+  margin-bottom: 12px;
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 35px #0003;
+  display: flex;
+  flex-direction: column;
+}
+
+#aiChatWindow[hidden] {
+  display: none;
+}
+
+.ai-chat-header {
+  padding: 16px;
+  background: #245b46;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#aiChatClose {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#aiChatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ai-message {
+  padding: 11px 14px;
+  border-radius: 14px;
+  max-width: 85%;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ai-bot {
+  background: #edf4ed;
+  align-self: flex-start;
+}
+
+.ai-user {
+  background: #245b46;
+  color: white;
+  align-self: flex-end;
+}
+
+#aiChatForm {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  border-top: 1px solid #e1e8df;
+}
+
+#aiChatInput {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #d4ddd3;
+  border-radius: 9px;
+}
+
+#aiChatSend {
+  background: #245b46;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -777,7 +908,61 @@ Log In
 </nav>
 </header>
 <section class="hero"><div><span class="eyebrow">Good food. Less waste.</span><h1>Save food.<br>Save money.<br>Earn together.</h1><p>Discover affordable meals around campus, rescue surplus food, and earn extra income by delivering orders to fellow students.</p><a class="primary-btn" href="explore.html" style="display:inline-block;text-decoration:none">Explore Available Food →</a></div><div class="hero-visual"><div class="food-emoji">🍱</div><h3>Good food deserves a second chance.</h3><p>Affordable meals and new opportunities, all in one place.</p></div></section>
-<main><section class="feature-strip" id="how-it-works"><div class="feature"><div class="icon">🥡</div><h3>Share Surplus Food</h3><p>Post extra food or discounted meals for other students to discover.</p><a href="post-food.html">Post a listing →</a></div><div class="feature"><div class="icon">💚</div><h3>Eat for Less</h3><p>Find affordable food and choose convenient campus collection points.</p><a href="explore.html">Explore food →</a></div><div class="feature"><div class="icon">🚲</div><h3>Earn by Delivering</h3><p>Take delivery requests and earn a fee for completed deliveries.</p><a href="delivery.html">View deliveries →</a></div></section></main>
+<main>
+<section class="info-carousel-section" id="about" aria-label="About ShareBite">
+  <div class="info-carousel" id="infoCarousel" aria-roledescription="carousel" aria-label="Discover ShareBite">
+    <div class="carousel-track" id="carouselTrack">
+      <article class="carousel-slide" aria-label="Slide 1 of 4">
+        <span class="carousel-kicker">A little about us · 1/4</span>
+        <div class="carousel-icon">🌱</div>
+        <h2>Good food can do more than fill a plate.</h2>
+        <p>ShareBite is a campus-focused concept built around a simple idea: make food easier to access, help reduce avoidable food waste, and create small earning opportunities for students.</p>
+        <p>Our story starts with a question: what if extra food could become an opportunity instead of going to waste? We want to connect food sharers, students looking for affordable meals, and campus delivery helpers in one convenient place.</p>
+      </article>
+      <article class="carousel-slide" aria-label="Slide 2 of 4">
+        <span class="carousel-kicker">Our purpose · 2/4</span>
+        <div class="carousel-icon">💚</div>
+        <h2>Our mission, vision and values</h2>
+        <div class="carousel-points">
+          <div class="carousel-point"><strong>🎯 Our mission</strong><span>Help students discover affordable food, share surplus meals responsibly, and find flexible campus delivery opportunities.</span></div>
+          <div class="carousel-point"><strong>🌍 Our vision</strong><span>A connected campus community where fewer meals go to waste and affordable food is easier to find.</span></div>
+          <div class="carousel-point"><strong>🤝 Our values</strong><span>Accessibility, responsible sharing, convenience, transparency, and collaboration.</span></div>
+        </div>
+      </article>
+      <article class="carousel-slide" aria-label="Slide 3 of 4">
+        <span class="carousel-kicker">Small actions, shared impact · 3/4</span>
+        <div class="carousel-icon">♻️</div>
+        <h2>Imagine what we can do together</h2>
+        <p>Every listing, affordable meal, and completed delivery can help build a more connected campus community.</p>
+        <div class="carousel-points">
+          <div class="carousel-point"><strong class="carousel-number" data-count="1">1</strong><span>easy place to discover food</span></div>
+          <div class="carousel-point"><strong class="carousel-number" data-count="3">3</strong><span>ways to take part: share, enjoy, deliver</span></div>
+          <div class="carousel-point"><strong class="carousel-number" data-count="100" data-suffix="%">100%</strong><span>community-powered in spirit</span></div>
+        </div>
+        <p style="font-size:12px;margin-top:12px">These are illustrative prototype values, not measured impact statistics.</p>
+      </article>
+      <article class="carousel-slide" aria-label="Slide 4 of 4">
+        <span class="carousel-kicker">Why ShareBite? · 4/4</span>
+        <div class="carousel-icon">🥗</div>
+        <h2>More than just a food listing</h2>
+        <p>We want the campus food experience to feel affordable, convenient, and community-minded.</p>
+        <div class="carousel-points">
+          <div class="carousel-point"><strong>💸 Student-friendly savings</strong><span>Discover meals that fit student budgets and make everyday food choices easier.</span></div>
+          <div class="carousel-point"><strong>♻️ Less avoidable waste</strong><span>Give surplus food a chance to be shared instead of thrown away unnecessarily.</span></div>
+          <div class="carousel-point"><strong>🤝 Campus community</strong><span>Connect students who have food to share with students who need a meal or delivery help.</span></div>
+        </div>
+      </article>
+    </div>
+    <div class="carousel-controls">
+      <button class="carousel-arrow" id="carouselPrev" type="button" aria-label="Previous slide">‹</button>
+      <div class="carousel-dots" id="carouselDots" aria-label="Choose carousel slide"></div>
+      <span class="carousel-status" id="carouselStatus" aria-live="polite">1 / 4</span>
+      <button class="carousel-arrow" id="carouselNext" type="button" aria-label="Next slide">›</button>
+    </div>
+  </div>
+</section>
+<section class="feature-strip" id="how-it-works"><div class="feature"><div class="icon">🥡</div><h3>Share Surplus Food</h3><p>Post extra food or discounted meals for other students to discover.</p><a href="post-food.html">Post a listing →</a></div><div class="feature"><div class="icon">💚</div><h3>Eat for Less</h3><p>Find affordable food and choose convenient campus collection points.</p><a href="explore.html">Explore food →</a></div><div class="feature"><div class="icon">🚲</div><h3>Earn by Delivering</h3><p>Take delivery requests and earn a fee for completed deliveries.</p><a href="delivery.html">View deliveries →</a></div></section>
+</main>
 <footer><strong>ShareBite</strong> · Good food, less waste, stronger campus communities.<br><br>Student hackathon prototype · Sample listings are for demonstration.</footer>
 <script>
 const menuToggle = document.getElementById('menuToggle');
@@ -803,6 +988,55 @@ document.addEventListener('click', event => {
     navMenu.classList.remove('show'); menuToggle.setAttribute('aria-expanded', 'false');
   }
 });
+
+// Dynamic ShareBite information carousel: arrows, dots, autoplay, and touch swipe.
+const carousel = document.getElementById('infoCarousel');
+const carouselTrack = document.getElementById('carouselTrack');
+const carouselSlides = Array.from(carouselTrack.children);
+const carouselDots = document.getElementById('carouselDots');
+const carouselStatus = document.getElementById('carouselStatus');
+const carouselPrev = document.getElementById('carouselPrev');
+const carouselNext = document.getElementById('carouselNext');
+let carouselIndex = 0;
+let carouselTimer;
+let touchStartX = 0;
+
+carouselSlides.forEach((slide, index) => {
+  const dot = document.createElement('button');
+  dot.type = 'button';
+  dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+  dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+  dot.addEventListener('click', () => { showCarouselSlide(index); restartCarousel(); });
+  carouselDots.appendChild(dot);
+});
+function showCarouselSlide(index) {
+  carouselIndex = (index + carouselSlides.length) % carouselSlides.length;
+  carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`;
+  Array.from(carouselDots.children).forEach((dot, i) => {
+    dot.classList.toggle('active', i === carouselIndex);
+    dot.setAttribute('aria-current', i === carouselIndex ? 'true' : 'false');
+  });
+  carouselStatus.textContent = `${carouselIndex + 1} / ${carouselSlides.length}`;
+}
+function restartCarousel() {
+  clearInterval(carouselTimer);
+  carouselTimer = setInterval(() => showCarouselSlide(carouselIndex + 1), 4000);
+}
+carouselPrev.addEventListener('click', () => { showCarouselSlide(carouselIndex - 1); restartCarousel(); });
+carouselNext.addEventListener('click', () => { showCarouselSlide(carouselIndex + 1); restartCarousel(); });
+carousel.addEventListener('mouseenter', () => clearInterval(carouselTimer));
+carousel.addEventListener('mouseleave', restartCarousel);
+carousel.addEventListener('focusin', () => clearInterval(carouselTimer));
+carousel.addEventListener('focusout', restartCarousel);
+carousel.addEventListener('touchstart', event => { touchStartX = event.changedTouches[0].screenX; }, { passive: true });
+carousel.addEventListener('touchend', event => {
+  const delta = event.changedTouches[0].screenX - touchStartX;
+  if (Math.abs(delta) > 45) showCarouselSlide(carouselIndex + (delta < 0 ? 1 : -1));
+  restartCarousel();
+}, { passive: true });
+showCarouselSlide(0);
+restartCarousel();
+
 </script>
 
 <script type="module">
@@ -983,6 +1217,122 @@ onAuthStateChanged(auth, (user) => {
         authScreen.hidden = false;
     }
 });
+</script>
+<!-- SHAREBITE AI CHATBOT -->
+<div id="aiChatbot">
+  <button id="aiChatToggle" type="button" aria-label="Open AI chatbot">
+    💬
+  </button>
+
+  <section id="aiChatWindow" hidden>
+    <div class="ai-chat-header">
+      <strong>🤖 ShareBite AI</strong>
+      <button id="aiChatClose" type="button" aria-label="Close chatbot">✕</button>
+    </div>
+
+    <div id="aiChatMessages" aria-live="polite">
+      <div class="ai-message ai-bot">
+        Hi! I'm ShareBite AI. How can I help you today? 💚
+      </div>
+    </div>
+
+    <form id="aiChatForm">
+      <input
+        id="aiChatInput"
+        type="text"
+        placeholder="Ask me anything..."
+        maxlength="1000"
+        autocomplete="off"
+        required
+      >
+      <button id="aiChatSend" type="submit">➤</button>
+    </form>
+  </section>
+</div>
+<script type="module">
+  import { getApp } from
+    "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+
+  import { getAuth } from
+    "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
+  const aiChatToggle = document.getElementById("aiChatToggle");
+  const aiChatWindow = document.getElementById("aiChatWindow");
+  const aiChatClose = document.getElementById("aiChatClose");
+  const aiChatForm = document.getElementById("aiChatForm");
+  const aiChatInput = document.getElementById("aiChatInput");
+  const aiChatSend = document.getElementById("aiChatSend");
+  const aiChatMessages = document.getElementById("aiChatMessages");
+
+  const AI_ENDPOINT =
+    "https://sharebite-ai.amirahshahril36.workers.dev/chat";
+
+  aiChatToggle.addEventListener("click", () => {
+    aiChatWindow.hidden = !aiChatWindow.hidden;
+    if (!aiChatWindow.hidden) aiChatInput.focus();
+  });
+
+  aiChatClose.addEventListener("click", () => {
+    aiChatWindow.hidden = true;
+  });
+
+  function addChatMessage(message, type) {
+    const element = document.createElement("div");
+    element.className = `ai-message ai-${type}`;
+    element.textContent = message;
+    aiChatMessages.appendChild(element);
+    aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+    return element;
+  }
+
+  aiChatForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const message = aiChatInput.value.trim();
+    if (!message) return;
+
+    addChatMessage(message, "user");
+    aiChatInput.value = "";
+    aiChatSend.disabled = true;
+
+    const thinking = addChatMessage("Thinking...", "bot");
+
+    try {
+      const auth = getAuth(getApp());
+      await auth.authStateReady();
+
+      if (!auth.currentUser) {
+        throw new Error("Please log in to use ShareBite AI.");
+      }
+
+      const token = await auth.currentUser.getIdToken();
+
+      const response = await fetch(AI_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "AI request failed.");
+      }
+
+      thinking.textContent = data.reply ||
+        "Sorry, I couldn't generate a reply.";
+
+    } catch (error) {
+      thinking.textContent =
+        error.message || "Something went wrong. Please try again.";
+    } finally {
+      aiChatSend.disabled = false;
+      aiChatInput.focus();
+    }
+  });
 </script>
 </body>
 </html>

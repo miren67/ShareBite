@@ -919,45 +919,90 @@ function deleteFood(id) {
 }*/
 function reserveFood(id) {
     const food = foods.find(item => item.id === id);
-
     if (!food || food.quantity <= 0) return;
 
-    const wantsDelivery = confirm(
+    // Step 1: Confirm the reservation.
+    const confirmed = confirm(
         `Reserve ${food.name} for RM ${money(food.price)}?\n\n` +
+        "You will be asked to complete a demo payment next."
+    );
+    if (!confirmed) return;
+
+    // Step 2: Choose delivery or self-collection BEFORE payment.
+    const wantsDelivery = confirm(
+        "How would you like to receive your food?\n\n" +
         "Choose OK for delivery, or Cancel for self-collection."
     );
 
-    let deliveryAddress = "";
+    // Step 3: Complete a simulated payment before requesting the address.
+    const paymentChoice = prompt(
+        `Payment for ${food.name}\nTotal: RM ${money(food.price)}\n\n` +
+        "Choose a demo payment method:\n" +
+        "1 - Online Banking (FPX)\n" +
+        "2 - E-wallet\n" +
+        "3 - Debit/Credit Card"
+    );
 
+    if (paymentChoice === null) {
+        message.textContent = "Reservation cancelled before payment.";
+        return;
+    }
+
+    const paymentMethods = {
+        "1": "Online Banking (FPX)",
+        "2": "E-wallet",
+        "3": "Debit/Credit Card"
+    };
+
+    const paymentMethod = paymentMethods[paymentChoice.trim()];
+    if (!paymentMethod) {
+        alert("Invalid payment method. Please reserve the food again and choose 1, 2, or 3.");
+        return;
+    }
+
+    const paymentConfirmed = confirm(
+        `Confirm demo payment of RM ${money(food.price)} using ${paymentMethod}?\n\n` +
+        "This is a prototype only. No real money will be charged."
+    );
+
+    if (!paymentConfirmed) {
+        message.textContent = "Payment cancelled. No reservation was created.";
+        return;
+    }
+
+    // Demo payment succeeds here. Ask for the delivery address only AFTER payment.
+    let deliveryAddress = "";
     if (wantsDelivery) {
         const address = prompt(
-            "Where would you like your food delivered?\n\n" +
+            "Demo payment successful!\n\n" +
+            "Where would you like your food delivered?\n" +
             "Example: UNITEN Library, Main Entrance"
         );
 
-        if (address === null) return;
+        if (address === null) {
+            alert(
+                "Your demo payment was marked as paid, but the delivery address was not provided. " +
+                "Please contact the ShareBite team in this prototype to resolve the order."
+            );
+            return;
+        }
 
         deliveryAddress = address.trim();
-
         if (!deliveryAddress) {
-            alert("Please enter your delivery location.");
+            alert("Please enter a delivery location. Your demo payment has been completed, but the order was not saved. Please try again.");
             return;
         }
     }
 
     let orders = [];
-
     try {
-        orders = JSON.parse(
-            localStorage.getItem(ORDERS_KEY) || "[]"
-        );
-
+        orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
         if (!Array.isArray(orders)) orders = [];
     } catch {
         orders = [];
     }
 
-    orders.push({
+    const order = {
         id: Date.now(),
         foodId: food.id,
         foodName: food.name,
@@ -965,18 +1010,29 @@ function reserveFood(id) {
         location: food.location,
         deliveryAddress: deliveryAddress,
         deliveryRequested: wantsDelivery,
-        status: "Pending",
+        paymentStatus: "Paid",
+        paymentMethod: paymentMethod,
+        status: wantsDelivery ? "Paid - Awaiting Delivery" : "Paid - Self-Collection",
         createdAt: new Date().toISOString()
-    });
+    };
 
+    orders.push(order);
     food.quantity -= 1;
-
     localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
     saveFoods();
 
     message.textContent = wantsDelivery
-        ? `Delivery requested to ${deliveryAddress}!`
-        : `Reservation created! Collect from ${food.location}.`;
+        ? `Payment successful! Delivery requested to ${deliveryAddress}.`
+        : `Payment successful! Your food is reserved for self-collection at ${food.location}.`;
+
+    alert(
+        `Payment successful!\n\n` +
+        `Food: ${food.name}\n` +
+        `Amount: RM ${money(food.price)}\n` +
+        `Method: ${paymentMethod}\n` +
+        `Status: ${wantsDelivery ? "Awaiting delivery" : "Ready for self-collection"}\n\n` +
+        "Note: This is a simulated payment for the ShareBite prototype. No real money was charged."
+    );
 
     renderFoods();
 }
