@@ -184,28 +184,41 @@ background: white;
 border: 1px solid var(--border);
 border-radius: 15px;
 overflow: hidden;
+display: flex;
+flex-direction: column;
 }
 
-.food-picture {
+/*.food-picture {
 min-height: 145px;
 background: #eaf1e8;
 display: grid;
 place-items: center;
 font-size: 64px;
 position: relative;
+}*/
+
+.food-picture {
+    height: 200px;
+    background: #eaf1e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 64px;
+    position: relative;
+    overflow: hidden;
 }
 /* Uploaded food photos */
 .food-photo {
     width: 100%;
-    height: 200px;
+    height: 100px;
     object-fit: cover;
     display: block;
 }
 
-.food-picture:has(.food-photo) {
+/*.food-picture:has(.food-photo) {
     display: block;
     min-height: 200px;
-}
+}*/
 
 .discount-tag {
 position: absolute;
@@ -221,6 +234,9 @@ font-weight: 800;
 
 .food-info {
 padding: 17px;
+flex: 1;
+display: flex;
+flex-direction: column;
 }
 
 .food-info h3 {
@@ -912,7 +928,12 @@ picture.appendChild(discountTag);
     button.addEventListener("click", () => reserveFood(food.id));
 
     info.append(title, location, deadline, quantity, priceRow, button);
-
+console.log("Delete button check:", {
+    foodName: food.name,
+    currentUserId: currentUserId,
+    ownerId: food.ownerId,
+    isOwner: food.ownerId === currentUserId
+});
     if (currentUserId && food.ownerId === currentUserId) {
       const deleteButton = document.createElement("button");
       deleteButton.className = "delete-btn";
@@ -1257,8 +1278,13 @@ logoutButton.addEventListener("click", async () => {
         alert("Unable to log out. Please try again.");
     }
 });
+  onAuthStateChanged(auth, (user) => {
 
-onAuthStateChanged(auth, (user) => {
+    window.dispatchEvent(new CustomEvent("sharebite-auth", {
+        detail: {
+            uid: user ? user.uid : null
+        }
+    }));
     if (user) {
         authScreen.hidden = true;
     } else {

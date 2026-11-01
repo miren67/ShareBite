@@ -1482,8 +1482,12 @@ onAuthStateChanged(auth, (user) => {
         "Sorry, I couldn't generate a reply.";
 
     } catch (error) {
-      thinking.textContent =
-        error.message || "Something went wrong. Please try again.";
+      console.error("ShareBite AI error:", error);
+
+    thinking.textContent =
+        "Oops! 💚 I'm having trouble connecting right now. Please try again in a moment.";
+        /*thinking.textContent =
+        error.message || "Something went wrong. Please try again.";*/ 
     } finally {
       aiChatSend.disabled = false;
       aiChatInput.focus();
