@@ -761,10 +761,7 @@ Log In
 </nav>
 </header>
 <main><div class="section-heading"><div><span class="eyebrow">Share with your campus</span><h2>Post a Food Listing</h2><p style="color:#66736a">Help another student find an affordable meal.</p></div></div><section id="postForm" class="form-panel open">
-<h2>Post a Food Listing</h2>
-<p style="color:#66736a;font-size:14px">
-Help another student find an affordable meal.
-</p>
+<h2>Let's Share Something Delicious!</h2><p>Fill in the details below and give your extra food a chance to make someone's day.</p>
 
 <form id="foodForm">
 <div class="form-grid">
@@ -1143,6 +1140,8 @@ document.getElementById("cancelBtn").addEventListener("click", () => { form.rese
 logoutButton.addEventListener("click", async () => {
     try {
         await signOut(auth);
+        // Go to homepage after logout
+        window.location.replace("homepage.html");
     } catch (error) {
         alert("Unable to log out. Please try again.");
     }

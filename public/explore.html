@@ -1211,6 +1211,8 @@ renderFoods();
 logoutButton.addEventListener("click", async () => {
     try {
         await signOut(auth);
+        // Go to homepage after logout
+        window.location.replace("homepage.html");
     } catch (error) {
         alert("Unable to log out. Please try again.");
     }
