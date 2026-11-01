@@ -279,12 +279,12 @@ color: var(--muted);
 
 .form-panel {
 display: none;
-margin-top: 35px;
+margin-top: 35px auto;
 padding: 24px;
 background: white;
 border: 1px solid var(--border);
 border-radius: 15px;
-max-width: 650px;
+max-width: 1000px;
 }
 
 .form-panel.open {
@@ -539,9 +539,18 @@ vertical-align: middle;
     border: none;
     border-radius: 12px;
     padding: 10px 16px;
-    font-size: 28px;
+    font-size: 18px;
     cursor: pointer;
     line-height: 1;
+}
+.menu-toggle,
+.logout-btn {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 14px 22px;
+    border-radius: 14px;
 }
 
 .menu-toggle:hover {
@@ -646,6 +655,24 @@ vertical-align: middle;
 #imagePreview[hidden] {
     display: none;
 }
+/* Logout icon button */
+.logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 14px;
+    background: #245b46;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.logout-btn svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
 </style>
 </head>
 <body>
@@ -715,6 +742,21 @@ Log In
 <a href="post-food.html">Post Food</a>
 <a href="delivery.html">Deliveries</a>
 </div>
+
+<button id="logoutButton" class="logout-btn" type="button"aria-label="Log Out" title="Log Out">
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="24" height="24"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    </button>
 </div>
 </nav>
 </header>
@@ -1060,7 +1102,7 @@ document.getElementById("cancelBtn").addEventListener("click", () => { form.rese
   });
 
   // Keep the login screen visible until Firebase confirms sign-in.
-  let logoutButton = null;
+  /*let logoutButton = null;
 
   onAuthStateChanged(auth, (user) => {
     window.dispatchEvent(new CustomEvent("sharebite-auth", {
@@ -1095,7 +1137,24 @@ document.getElementById("cancelBtn").addEventListener("click", () => { form.rese
         logoutButton.hidden = true;
       }
     }
-  });
+  });*/ 
+  const logoutButton = document.getElementById("logoutButton");
+
+logoutButton.addEventListener("click", async () => {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        alert("Unable to log out. Please try again.");
+    }
+});
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        authScreen.hidden = true;
+    } else {
+        authScreen.hidden = false;
+    }
+});
 </script>
 </body>
 </html>

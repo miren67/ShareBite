@@ -532,6 +532,24 @@ vertical-align: middle;
     position: relative;
 }
 
+.nav-right .menu-toggle,
+.nav-right .logout-btn {
+    flex-shrink: 0;
+}
+
+.logout-btn[hidden] {
+    display: inline-block !important;
+    visibility: hidden !important;
+    pointer-events: none;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+}
+
 /* Three-line button */
 .menu-toggle {
     background: #245b46;
@@ -539,7 +557,7 @@ vertical-align: middle;
     border: none;
     border-radius: 12px;
     padding: 10px 16px;
-    font-size: 28px;
+    font-size: 18px;
     cursor: pointer;
     line-height: 1;
 }
@@ -628,7 +646,34 @@ vertical-align: middle;
     }
 }
 
+/* Make Browse Here! and Log Out buttons consistent */
+.menu-toggle,
+.logout-btn {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 14px 22px;
+    border-radius: 14px;
+}
+/* Logout icon button */
+.logout-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 14px;
+    background: #245b46;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
 
+.logout-btn svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
 </style>
 </head>
 <body>
@@ -690,7 +735,7 @@ Log In
 <div class="logo">🥗 ShareBite</div>
 <nav class="navbar">
 <!-- <a href="homepage.html" class="brand">ShareBite</a> -->
-<div class="nav-right">
+<!-- <div class="nav-right">
 <button class="menu-toggle" id="menuToggle" aria-label="Open navigation menu" aria-expanded="false">Browse Here!</button>
 <div class="nav-menu" id="navMenu">
 <a href="homepage.html">Home</a>
@@ -698,6 +743,36 @@ Log In
 <a href="post-food.html">Post Food</a>
 <a href="delivery.html">Deliveries</a>
 </div>
+</div>-->
+
+<div class="nav-right">
+    <button class="menu-toggle" id="menuToggle"
+        aria-label="Open navigation menu"
+        aria-expanded="false">
+        Browse Here!
+    </button>
+
+    <div class="nav-menu" id="navMenu">
+        <a href="homepage.html">Home</a>
+        <a href="explore.html">Explore Food</a>
+        <a href="post-food.html">Post Food</a>
+        <a href="delivery.html">Deliveries</a>
+    </div>
+
+    <button id="logoutButton" class="logout-btn" type="button" aria-label="Log Out" title="Log Out">
+        <svg xmlns="http://www.w3.org/2000/svg"
+         width="24" height="24"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="currentColor"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    </button>
 </div>
 </nav>
 </header>
@@ -857,7 +932,7 @@ document.addEventListener('click', event => {
   });
 
   // Keep the login screen visible until Firebase confirms sign-in.
-  let logoutButton = null;
+/*let logoutButton = null;
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -889,7 +964,25 @@ document.addEventListener('click', event => {
         logoutButton.hidden = true;
       }
     }
-  });
+  });*/
+
+  const logoutButton = document.getElementById("logoutButton");
+
+logoutButton.addEventListener("click", async () => {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        alert("Unable to log out. Please try again.");
+    }
+});
+
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        authScreen.hidden = true;
+    } else {
+        authScreen.hidden = false;
+    }
+});
 </script>
 </body>
 </html>
